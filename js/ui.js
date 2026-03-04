@@ -1,0 +1,449 @@
+// ui.js
+// Manejo de toda la interfaz de usuario y renderizado
+
+// Configuración de marked con renderer personalizado para código
+const renderer = new marked.Renderer();
+
+// Personalizar la renderización de tablas
+renderer.table = function(header, body) {
+    return `
+        <div class="table-wrapper">
+            <table>
+                <thead>${header}</thead>
+                <tbody>${body}</tbody>
+            </table>
+        </div>
+    `;
+};
+
+// También personalizar el row de tabla para mantener consistencia
+renderer.tablerow = function(content) {
+    return `<tr>${content}</tr>`;
+};
+
+renderer.tablecell = function(content, flags) {
+    const type = flags.header ? 'th' : 'td';
+    const tag = flags.align ? `<${type} align="${flags.align}">` : `<${type}>`;
+    return tag + content + `</${type}>`;
+};
+
+// Personalizar la renderización de bloques de código
+renderer.code = function(code, language) {
+    // Detectar el lenguaje o usar 'text' por defecto
+    const lang = language || 'text';
+    const validLang = hljs.getLanguage(lang) ? lang : 'text';
+    
+    // Resaltar el código con highlight.js
+    const highlighted = hljs.highlight(code, { language: validLang }).value;
+    
+    // Crear la estructura del bloque de código
+    return `
+        <div class="code-block-wrapper">
+            <div class="code-header">
+                <span class="code-language">${validLang}</span>
+                <button class="code-copy-btn" onclick="copyCodeBlock(this)" aria-label="Copiar código">
+                    <span class="material-symbols-outlined" translate="no">content_copy</span>
+                </button>
+            </div>
+            <pre><code class="hljs language-${validLang}">${highlighted}</code></pre>
+        </div>
+    `;
+};
+
+// Configuración de marked (actualizada con el renderer)
+marked.setOptions({
+    renderer: renderer,
+    breaks: true,
+    gfm: true,
+    highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+    }
+});
+
+// Elementos del DOM
+const messageContainer = document.getElementById('messageContainer');
+const messagesDynamic = document.getElementById('messagesDynamic');
+const chatTextarea = document.getElementById('chatTextarea');
+const messageArea = document.getElementById('messageArea');
+const sendBtn = document.getElementById('sendBtn');
+
+// Estado del UI
+let isTyping = false;
+let typingAnimationInterval;
+let currentStreamingMessage = '';
+let streamingMessageId = null;
+
+// ✅ NUEVA: Cargar configuración de Enter desde localStorage
+let enterToSend = localStorage.getItem('pera_enter_to_send') !== 'false'; // true por defecto
+
+// Función para mostrar mensaje de bienvenida
+function showWelcomeMessage() {
+    if (document.getElementById('welcomeMessage')) return;
+    
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.className = 'welcome-message';
+    welcomeDiv.id = 'welcomeMessage';
+    
+    // Usar nombre si existe
+    const userName = localStorage.getItem('pera_user_name');
+    if (userName) {
+        welcomeDiv.innerHTML = `<img src="img/pera-ai-logo2.jpg" alt="Logo Pera AI" />`;
+    } else {
+        welcomeDiv.innerHTML = '<img src="img/pera-ai-logo2.jpg" alt="Logo Pera AI" />';
+    }
+    
+    messageContainer.insertBefore(welcomeDiv, messageContainer.firstChild);
+}
+
+// Función para crear burbuja de usuario
+function createUserBubble(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-user';
+    
+    // ✅ CORREGIDO: Respetar saltos de línea
+    const processedContent = message.replace(/\n/g, '  \n\n');
+    
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'bubble user-bubble';
+    bubbleDiv.innerHTML = marked.parse(processedContent);
+    
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'message-actions';
+    actionsDiv.innerHTML = `
+        <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
+            <span class="material-symbols-outlined" translate="no">content_copy</span>
+        </button>
+    `;
+    
+    messageDiv.appendChild(bubbleDiv);
+    messageDiv.appendChild(actionsDiv);
+    
+    return messageDiv;
+}
+
+// Función para crear burbuja del bot
+function createBotBubble(message, isStreaming = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-ia';
+    if (isStreaming) messageDiv.id = 'streaming-message';
+    
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'bubble bot-bubble';
+    
+    if (message) {
+        bubbleDiv.innerHTML = isStreaming ? message : marked.parse(message);
+    }
+    
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'message-actions';
+    actionsDiv.innerHTML = `
+        <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
+            <span class="material-symbols-outlined" translate="no">content_copy</span>
+        </button>
+        <button class="icon-btn action-btn share-msg-btn" aria-label="Compartir mensaje" onclick="shareMessage(this)">
+            <span class="material-symbols-outlined" translate="no">forward</span>
+        </button>
+    `;
+    
+    // ✅ NUEVO: Mensaje de advertencia legal
+    const disclaimerDiv = document.createElement('div');
+    disclaimerDiv.className = 'message-disclaimer';
+    disclaimerDiv.textContent = 'Generado por IA, solo como referencia. Verifica las respuestas antes de usarlas';
+    
+    messageDiv.appendChild(bubbleDiv);
+    messageDiv.appendChild(actionsDiv);
+    messageDiv.appendChild(disclaimerDiv);
+    return messageDiv;
+}
+
+// ✅ FUNCIÓN MEJORADA - Streaming suave sin parpadeos
+function updateStreamingMessage(newChunk) {
+    // Acumular el nuevo chunk
+    currentStreamingMessage += newChunk;
+    
+    // Buscar o crear la burbuja de streaming
+    let streamingMsg = document.getElementById('streaming-message');
+    
+    if (!streamingMsg) {
+        // Crear nueva burbuja SOLO si no existe
+        streamingMsg = document.createElement('div');
+        streamingMsg.className = 'message-ia';
+        streamingMsg.id = 'streaming-message';
+        
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'bubble bot-bubble';
+        bubbleDiv.id = 'streaming-bubble-content';
+        streamingMsg.appendChild(bubbleDiv);
+        
+        // Añadir acciones después (vacías por ahora)
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'message-actions';
+        actionsDiv.id = 'streaming-actions';
+        actionsDiv.style.opacity = '0'; // Ocultar acciones durante streaming
+        streamingMsg.appendChild(actionsDiv);
+        
+        messagesDynamic.appendChild(streamingMsg);
+        
+        // Guardar referencia al contenido
+        streamingMsg.contentBubble = bubbleDiv;
+    }
+    
+    // Actualizar SOLO el contenido, sin tocar acciones
+    const bubble = streamingMsg.querySelector('.bubble');
+    if (bubble) {
+        // Usar requestAnimationFrame para evitar parpadeos
+        requestAnimationFrame(() => {
+            bubble.innerHTML = marked.parse(currentStreamingMessage);
+            scrollToBottom();
+        });
+    }
+}
+
+// ✅ FUNCIÓN CORREGIDA - Finalización limpia sin pérdida de texto
+function finalizeStreamingMessage() {
+    const streamingMsg = document.getElementById('streaming-message');
+    
+    if (streamingMsg) {
+        // Quitar ID de streaming
+        streamingMsg.id = '';
+        
+        // Asegurar que el contenido final esté renderizado
+        const bubble = streamingMsg.querySelector('.bubble');
+        if (bubble) {
+            // Última actualización por si acaso
+            bubble.innerHTML = marked.parse(currentStreamingMessage);
+        }
+        
+        // AÑADIR LAS ACCIONES AHORA (copiar/compartir)
+        const actionsDiv = streamingMsg.querySelector('.message-actions');
+        if (actionsDiv) {
+            actionsDiv.innerHTML = `
+                <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
+                    <span class="material-symbols-outlined" translate="no">content_copy</span>
+                </button>
+                <button class="icon-btn action-btn share-msg-btn" aria-label="Compartir mensaje" onclick="shareMessage(this)">
+                    <span class="material-symbols-outlined" translate="no">forward</span>
+                </button>
+            `;
+            actionsDiv.style.opacity = '1'; // Mostrar acciones
+        }
+        
+        // ✅ AÑADIR DISCLAIMER SI NO EXISTE
+        if (!streamingMsg.querySelector('.message-disclaimer')) {
+            const disclaimerDiv = document.createElement('div');
+            disclaimerDiv.className = 'message-disclaimer';
+            disclaimerDiv.textContent = 'Generado por IA, solo como referencia. Verifica las respuestas antes de usarlas';
+            streamingMsg.appendChild(disclaimerDiv);
+        }
+        
+        // ANIMACIÓN SUTIL DE FINALIZACIÓN
+        bubble.style.transition = 'border-color 0.3s ease';
+        bubble.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+        setTimeout(() => {
+            bubble.style.borderColor = '';
+        }, 300);
+    }
+    
+    // Resetear para el próximo mensaje (pero después de un pequeño delay)
+    setTimeout(() => {
+        currentStreamingMessage = '';
+    }, 100);
+}
+
+// ✅ FUNCIÓN NUEVA - Para limpiar si hay error
+function abortStreaming() {
+    const streamingMsg = document.getElementById('streaming-message');
+    if (streamingMsg) {
+        streamingMsg.remove(); // Eliminar burbuja incompleta
+    }
+    currentStreamingMessage = '';
+    streamingMessageId = null;
+}
+
+// Función para mostrar indicador de typing
+function showTypingIndicator() {
+    isTyping = true;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message-ia typing-indicator-container';
+    typingDiv.id = 'typingIndicator';
+    
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'bubble bot-bubble typing-bubble';
+    bubbleDiv.innerHTML = `
+        <div class="typing-animation">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+        <span class="typing-text">Obteniendo respuesta del servidor</span>
+    `;
+    
+    typingDiv.appendChild(bubbleDiv);
+    messagesDynamic.appendChild(typingDiv);
+    scrollToBottom();
+    
+    let step = 0;
+    typingAnimationInterval = setInterval(() => {
+        const textElement = document.querySelector('.typing-text');
+        if (textElement) {
+            const dots = '.'.repeat((step % 3) + 1);
+            textElement.textContent = `Obteniendo respuesta del servidor${dots}`;
+            step++;
+        }
+    }, 500);
+}
+
+// Función para ocultar indicador de typing
+function hideTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) {
+        clearInterval(typingAnimationInterval);
+        indicator.style.opacity = '0';
+        indicator.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            if (indicator && indicator.parentNode) {
+                indicator.parentNode.removeChild(indicator);
+            }
+        }, 300);
+    }
+    isTyping = false;
+}
+
+// Función para copiar mensaje
+window.copyMessage = function(button) {
+    const messageDiv = button.closest('.message-ia, .message-user');
+    const bubble = messageDiv.querySelector('.bubble');
+    const text = bubble.textContent;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<span class="material-symbols-outlined" translate="no">check</span>';
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+        }, 2000);
+    });
+};
+
+// Función para copiar bloques de código
+window.copyCodeBlock = function(button) {
+    const wrapper = button.closest('.code-block-wrapper');
+    const codeElement = wrapper.querySelector('code');
+    const code = codeElement.textContent || codeElement.innerText;
+    
+    navigator.clipboard.writeText(code).then(() => {
+        const originalIcon = button.innerHTML;
+        const originalColor = button.style.color;
+        const originalBorder = button.style.borderColor;
+        
+        button.innerHTML = '<span class="material-symbols-outlined" translate="no">check</span>';
+        button.style.color = '#10b981';
+        button.style.borderColor = '#10b981';
+        
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+            button.style.color = originalColor;
+            button.style.borderColor = originalBorder;
+        }, 2000);
+    }).catch(err => {
+        console.error('Error al copiar:', err);
+        alert('No se pudo copiar el código automáticamente. Selecciona y copia manualmente.');
+    });
+};
+
+// Función para compartir mensaje
+window.shareMessage = function(button) {
+    const messageDiv = button.closest('.message-ia');
+    const bubble = messageDiv.querySelector('.bubble');
+    const text = bubble.textContent;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mensaje de Pera AI',
+            text: text
+        });
+    } else {
+        copyMessage(button);
+    }
+};
+
+// Función para scroll al último mensaje
+function scrollToBottom() {
+    messageContainer.scrollTo({
+        top: messageContainer.scrollHeight,
+        behavior: 'smooth'
+    });
+}
+
+// Ajustar altura del textarea
+function adjustTextareaHeight() {
+    chatTextarea.style.height = 'auto';
+    const newHeight = Math.min(chatTextarea.scrollHeight, 200);
+    chatTextarea.style.height = newHeight + 'px';
+}
+
+// Resetear textarea
+function resetTextarea() {
+    chatTextarea.value = '';
+    chatTextarea.style.height = '40px';
+}
+
+// Manejar foco del textarea
+function handleTextareaFocus() {
+    messageArea.classList.add('sticky');
+}
+
+// ✅ NUEVA: Recargar mensaje de bienvenida cuando cambia el nombre
+function refreshWelcomeMessage() {
+    const existingWelcome = document.getElementById('welcomeMessage');
+    if (existingWelcome) {
+        existingWelcome.remove();
+    }
+    showWelcomeMessage();
+}
+
+// Inicializar UI
+function initUI() {
+    chatTextarea.addEventListener('input', adjustTextareaHeight);
+    chatTextarea.addEventListener('focus', handleTextareaFocus);
+    
+    // ✅ MEJORADO: Comportamiento de Enter con configuración
+    chatTextarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (isMobile) {
+                // En móviles: Enter siempre salta línea
+                return;
+            } else {
+                // En desktop: depende de la configuración
+                if (enterToSend && !e.shiftKey) {
+                    e.preventDefault();
+                    sendBtn.click();
+                } else if (!enterToSend && e.shiftKey) {
+                    e.preventDefault();
+                    sendBtn.click();
+                }
+            }
+        }
+    });
+    
+    showWelcomeMessage();
+}
+
+// Exportar funciones
+window.showWelcomeMessage = showWelcomeMessage;
+window.refreshWelcomeMessage = refreshWelcomeMessage;
+window.createUserBubble = createUserBubble;
+window.createBotBubble = createBotBubble;
+window.updateStreamingMessage = updateStreamingMessage;
+window.finalizeStreamingMessage = finalizeStreamingMessage;
+window.showTypingIndicator = showTypingIndicator;
+window.hideTypingIndicator = hideTypingIndicator;
+window.scrollToBottom = scrollToBottom;
+window.resetTextarea = resetTextarea;
+window.initUI = initUI;
+window.setEnterToSend = (value) => { enterToSend = value; };

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Pera AI - Advanced AI Assistant | Project 79</title>
+    <meta name="description" content="Meet Pera AI, the mysterious and powerful AI assistant from Project 79. Experience high-level reasoning, web search, and a personality that evolves.">
+    <meta name="keywords" content="Pera AI, AI Assistant, Project 79, DeepSeek, Chatbot, Artificial Intelligence, Mystery AI">
+    <meta name="author" content="Teo">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Pera AI - Project 79 Assistant">
+    <meta property="og:description" content="An AI with mysteries yet to be solved. Join the Alpha stage of Pera AI.">
+    <meta property="og:image" content="img/pera-ai-logo2.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Pera AI - Project 79">
+    <meta property="twitter:description" content="Discover the secrets behind Pera AI's 'glitches' and its advanced reasoning capabilities.">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&text=+tune+sync+close+search+desktop_landscape+colors+photo_size_select_large+keyboard_arrow_up+download+share+favorite+play_arrow+more_horiz" rel="stylesheet" /> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all" /> 
+    <link rel="stylesheet" href="css/additional.css" type="text/css" media="all" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  </head>
+  <body>
+    
+<header class="chat-header" id="mainHeader">
+  <div class="header-container">
+
+    <div class="header-left">
+      <div class="desktop-actions">
+        <div class="avatar-container">
+          <img src="img/pera-ai-logo2.jpg" alt="Pera AI Avatar" />
+        </div>
+        <button class="icon-btn settings-btn" id="settingsBtnDesktop" aria-label="Settings">
+          <span class="material-symbols-outlined" translate="no">dock_to_right</span> 
+        </button>
+        <button class="icon-btn new-chat-btn" id="newChatBtnDesktop" aria-label="New Chat">
+          <span class="material-symbols-outlined" translate="no">maps_ugc</span> 
+        </button>
+      </div>
+      
+      <div class="mobile-actions">
+        <button class="icon-btn settings-btn" id="settingsBtnMobile" aria-label="Settings">
+          <span class="material-symbols-outlined" translate="no">dock_to_right</span>
+        </button>
+        <button class="community-btn" id="communityBtn">
+          <span class="material-symbols-outlined" translate="no">mobile_camera_front</span>
+          <span class="community-text">Community</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="desktop-actions">
+        <button class="icon-btn share-btn" id="shareBtnDesktop" aria-label="Share">
+          <span class="material-symbols-outlined" translate="no">forward</span>
+        </button>
+      </div>
+
+      <div class="mobile-actions">
+        <button class="icon-btn new-chat-btn" id="newChatBtnMobile" aria-label="New Chat">
+          <span class="material-symbols-outlined" translate="no">maps_ugc</span>
+        </button>
+        <button class="icon-btn share-btn" id="shareBtnMobile" aria-label="Share">
+          <span class="material-symbols-outlined" translate="no">forward</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<div class="settings-modal-overlay" id="settingsModalOverlay">
+  <div class="settings-modal" id="settingsModal">
+    
+    <div class="settings-modal-header">
+      <h3 class="settings-modal-title">Settings</h3>
+      <button class="settings-modal-close" id="settingsModalClose" aria-label="Close">
+        <span class="material-symbols-outlined" translate="no">dock_to_bottom</span>
+      </button>
+    </div>
+
+    <div class="settings-modal-content">
+      
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase1">person</span>
+          Username
+        </h3>
+        <div class="settings-section-content">
+          <input 
+            type="text" 
+            class="settings-input" 
+            id="userNameInput" 
+            placeholder="Ex: Zenicero 😁"
+            value=""
+          >
+          <div class="settings-button-group">
+            <button class="settings-btn settings-btn-secondary" id="clearUserNameBtn">
+              Clear
+            </button>
+            <button class="settings-btn settings-btn-primary" id="saveUserNameBtn">
+              Save
+            </button>
+          </div>
+          <p class="settings-input-hint">The bot will address you by this name or nickname</p>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase2">translate</span>
+          Language
+        </h3>
+        <div class="settings-section-content">
+          <select class="settings-select" id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Spanish (System)</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ja">Japanese</option>
+            <option value="zh">Chinese</option>
+            <option value="ru">Russian</option>
+          </select>
+          <p class="settings-select-hint">8 languages available, more coming soon</p>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase3">psychology</span>
+          Personality
+        </h3>
+        <div class="settings-section-content">
+          <div class="settings-radio-group">
+            <label class="settings-radio-label">
+              <input type="radio" name="personality" value="profesional" checked>
+              <span class="settings-radio-custom"></span>
+              <span class="settings-radio-text">
+                <strong>Professional</strong>
+                <small>Formal, precise, and direct</small>
+              </span>
+            </label>
+            <label class="settings-radio-label">
+              <input type="radio" name="personality" value="amigable">
+              <span class="settings-radio-custom"></span>
+              <span class="settings-radio-text">
+                <strong>Friendly</strong>
+                <small>Warm, close, and conversational</small>
+              </span>
+            </label>
+            <label class="settings-radio-label">
+              <input type="radio" name="personality" value="creativo">
+              <span class="settings-radio-custom"></span>
+              <span class="settings-radio-text">
+                <strong>Creative</strong>
+                <small>Imaginative, with examples and analogies</small>
+              </span>
+            </label>
+            <label class="settings-radio-label">
+              <input type="radio" name="personality" value="divertido">
+              <span class="settings-radio-custom"></span>
+              <span class="settings-radio-text">
+                <strong>Fun</strong>
+                <small>Humorous, with emojis and relaxed tone</small>
+              </span>
+            </label>
+            <label class="settings-radio-label">
+              <input type="radio" name="personality" value="educativo">
+              <span class="settings-radio-custom"></span>
+              <span class="settings-radio-text">
+                <strong>Educational</strong>
+                <small>Didactic, patient, and explanatory</small>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase4">maps_ugc</span>
+          Chat Preferences
+        </h3>
+        <div class="settings-section-content">
+          <label class="settings-checkbox-label">
+            <input type="checkbox" id="enterToSendCheckbox" checked>
+            <span class="settings-checkbox-custom"></span>
+            <span class="settings-checkbox-text">
+              Enter to send (Desktop)
+              <small>Disable so Enter only creates a new line</small>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase5">model_training</span>
+          Preferred Model
+        </h3>
+        <div class="settings-section-content">
+          <select class="settings-select" id="defaultModelSelect">
+            </select>
+          <p class="settings-select-hint">Default model on startup. Note: Some AI models may require a subscription.</p>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">
+          <span class="material-symbols-outlined" translate="no" id="fase6">thermostat</span>
+          Creativity - Temperature
+        </h3>
+        <p class="settings-select-hint">Lower temperature is more precise; higher temperature is more creative.</p>
+        <div class="settings-section-content">
+          <div class="settings-slider-container">
+            <input 
+              type="range" 
+              class="settings-slider" 
+              id="temperatureSlider" 
+              min="0" 
+              max="1" 
+              step="0.1" 
+              value="0.7"
+            >
+            <div class="settings-slider-labels">
+              <span>Precise</span>
+              <span class="settings-slider-value" id="temperatureValue">0.7</span>
+              <span>Creative</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="version-website">Version: 1.0 (Beta)</p>
+    </div>
+  </div>
+</div>
+
+<div class="chat-container" id="chatContainer">
+  
+  <div class="message-container" id="messageContainer">
+    <div class="messages-dynamic" id="messagesDynamic"></div>
+  </div>
+
+  <div class="message-area" id="messageArea">
+    <div class="input-container">
+      
+      <div class="textarea-wrapper">
+        <textarea 
+          class="chat-textarea" 
+          id="chatTextarea" 
+          placeholder="Message Pera AI"
+          rows="1"
+        ></textarea>
+      </div>
+
+      <div class="input-toolbar">
+        <div class="toolbar-left">
+          <button class="icon-btn toolbar-btn think-btn" id="thinkBtn" aria-label="Think">
+            <span class="material-symbols-outlined" translate="no">wb_incandescent</span> 
+            Reason
+          </button>
+          <button class="icon-btn toolbar-btn search-btn" id="searchBtn" aria-label="Search">
+            <span class="material-symbols-outlined" translate="no">language</span> 
+            Search
+          </button>
+        </div>
+        <div class="toolbar-right">
+          <button class="icon-btn send-btn" id="sendBtn" aria-label="Send message">
+            <span class="material-symbols-outlined" translate="no">arrow_upward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+<script src="js/api-config.js"></script>
+<script src="js/system-prompt.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/script-basic.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof populateModelsDropdown === 'function') {
+        setTimeout(populateModelsDropdown, 100);
+    }
+});
+</script>
+
+  </body>
+</html>
