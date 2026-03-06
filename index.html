@@ -216,33 +216,54 @@
           <p class="settings-select-hint">Default model on startup. Note: Some AI models may require a subscription.</p>
         </div>
       </div>
-
-      <div class="settings-section">
-        <h3 class="settings-section-title">
-          <span class="material-symbols-outlined" translate="no" id="fase6">thermostat</span>
-          Creativity - Temperature
-        </h3>
-        <p class="settings-select-hint">Lower temperature is more precise; higher temperature is more creative.</p>
-        <div class="settings-section-content">
-          <div class="settings-slider-container">
-            <input 
-              type="range" 
-              class="settings-slider" 
-              id="temperatureSlider" 
-              min="0" 
-              max="1" 
-              step="0.1" 
-              value="0.7"
-            >
-            <div class="settings-slider-labels">
-              <span>Precise</span>
-              <span class="settings-slider-value" id="temperatureValue">0.7</span>
-              <span>Creative</span>
-            </div>
-          </div>
-        </div>
+      
+      <!-- Sección: Temperatura/Creatividad -->
+<div class="settings-section">
+  <h3 class="settings-section-title">
+    <span class="material-symbols-outlined" translate="no" id="fase6">thermostat</span>
+    Temperatura - Creatividad
+  </h3>
+  <p class="settings-select-hint">Preciso (0) · Balanceado · Creativo (1)</p>
+  
+  <div class="settings-section-content">
+    <div class="slider-modern-container">
+      <!-- Labels superior -->
+      <div class="slider-modern-labels">
+        <span class="slider-label-precise">Precise</span>
+        <span class="slider-value" id="temperatureValue">0.7</span>
+        <span class="slider-label-creative">Creative</span>
       </div>
-      <p class="version-website">Version: 1.0 (Beta)</p>
+      
+      <!-- Contenedor del slider personalizado -->
+      <div class="slider-modern-track" id="sliderTrack">
+        <div class="slider-modern-fill" id="sliderFill" style="width: 70%"></div>
+        <div class="slider-modern-thumb" id="sliderThumb" style="left: 70%"></div>
+      </div>
+      
+      <!-- Rango numérico inferior (opcional) -->
+      <div class="slider-modern-scale">
+        <span>0</span>
+        <span>0.2</span>
+        <span>0.4</span>
+        <span>0.6</span>
+        <span>0.8</span>
+        <span>1</span>
+      </div>
+      
+      <!-- Input oculto para mantener funcionalidad con JS existente -->
+      <input 
+        type="range" 
+        id="temperatureSlider" 
+        min="0" 
+        max="1" 
+        step="0.1" 
+        value="0.7"
+        style="display: none;" <!-- Ocultamos el original -->
+    </div>
+  </div>
+</div>
+      
+      <p class="version-website">Version: 0.0 (Alpha)</p>
     </div>
   </div>
 </div>
@@ -267,11 +288,11 @@
 
       <div class="input-toolbar">
         <div class="toolbar-left">
-          <button class="icon-btn toolbar-btn think-btn" id="thinkBtn" aria-label="Think">
+          <button class="toolbar-btn think-btn" id="thinkBtn" aria-label="Think">
             <span class="material-symbols-outlined" translate="no">wb_incandescent</span> 
             Reason
           </button>
-          <button class="icon-btn toolbar-btn search-btn" id="searchBtn" aria-label="Search">
+          <button class="toolbar-btn search-btn" id="searchBtn" aria-label="Search">
             <span class="material-symbols-outlined" translate="no">language</span> 
             Search
           </button>

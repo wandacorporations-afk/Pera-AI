@@ -165,6 +165,82 @@ function initSettingsControls() {
     }
 }
 
+// ===== SLIDER MODERNO (nuevo) =====
+const sliderTrack = document.getElementById('sliderTrack');
+const sliderFill = document.getElementById('sliderFill');
+const sliderThumb = document.getElementById('sliderThumb');
+const hiddenSlider = document.getElementById('temperatureSlider');
+
+let isDragging = false;
+
+function updateSliderFromValue(value) {
+    const percent = (value / 1) * 100;
+    sliderFill.style.width = `${percent}%`;
+    sliderThumb.style.left = `${percent}%`;
+    temperatureValue.textContent = value; // ✅ Usa la variable existente
+    hiddenSlider.value = value;
+    
+    localStorage.setItem('pera_temperature', value);
+}
+
+function handleSliderMove(clientX) {
+    if (!isDragging) return;
+    
+    const rect = sliderTrack.getBoundingClientRect();
+    let x = clientX - rect.left;
+    x = Math.max(0, Math.min(x, rect.width));
+    
+    const percent = x / rect.width;
+    const value = Math.round(percent * 10) / 10; // step 0.1
+    updateSliderFromValue(value);
+}
+
+// Eventos del track
+sliderTrack.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    handleSliderMove(e.clientX);
+});
+
+sliderThumb.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    e.preventDefault(); // Evitar selección de texto
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        handleSliderMove(e.clientX);
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// Soporte táctil para móviles
+sliderTrack.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    handleSliderMove(e.touches[0].clientX);
+});
+
+sliderThumb.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    e.preventDefault();
+});
+
+document.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+        handleSliderMove(e.touches[0].clientX);
+    }
+});
+
+document.addEventListener('touchend', () => {
+    isDragging = false;
+});
+
+// Inicializar valor guardado
+const savedTemp = localStorage.getItem('pera_temperature') || '0.7';
+updateSliderFromValue(parseFloat(savedTemp));
+
 // ===== ✅ NUEVA FUNCIÓN: Cargar modelos desde API con caché 8h =====
 async function populateModelsDropdown() {
     const select = document.getElementById('defaultModelSelect');

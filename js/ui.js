@@ -120,7 +120,6 @@ function createUserBubble(message) {
     
     messageDiv.appendChild(bubbleDiv);
     messageDiv.appendChild(actionsDiv);
-    
     return messageDiv;
 }
 
@@ -148,14 +147,8 @@ function createBotBubble(message, isStreaming = false) {
         </button>
     `;
     
-    // ✅ NUEVO: Mensaje de advertencia legal
-    const disclaimerDiv = document.createElement('div');
-    disclaimerDiv.className = 'message-disclaimer';
-    disclaimerDiv.textContent = 'Generado por IA, solo como referencia. Verifica las respuestas antes de usarlas';
-    
     messageDiv.appendChild(bubbleDiv);
     messageDiv.appendChild(actionsDiv);
-    messageDiv.appendChild(disclaimerDiv);
     return messageDiv;
 }
 
@@ -229,14 +222,6 @@ function finalizeStreamingMessage() {
                 </button>
             `;
             actionsDiv.style.opacity = '1'; // Mostrar acciones
-        }
-        
-        // ✅ AÑADIR DISCLAIMER SI NO EXISTE
-        if (!streamingMsg.querySelector('.message-disclaimer')) {
-            const disclaimerDiv = document.createElement('div');
-            disclaimerDiv.className = 'message-disclaimer';
-            disclaimerDiv.textContent = 'Generado por IA, solo como referencia. Verifica las respuestas antes de usarlas';
-            streamingMsg.appendChild(disclaimerDiv);
         }
         
         // ANIMACIÓN SUTIL DE FINALIZACIÓN
@@ -433,6 +418,23 @@ function initUI() {
     
     showWelcomeMessage();
 }
+
+const botones = document.querySelectorAll('.toolbar-btn');
+
+botones.forEach(boton => {
+    boton.addEventListener('click', () => {
+        const estaActivo = boton.classList.contains('active-btn');
+        
+        // Quitamos la clase active-btn de todos los botones
+        botones.forEach(b => b.classList.remove('active-btn'));
+        
+        // Si NO estaba activo, lo activamos ahora
+        if (!estaActivo) {
+            boton.classList.add('active-btn');
+        }
+        // Si estaba activo, ya lo desactivamos con el remove anterior
+    });
+});
 
 // Exportar funciones
 window.showWelcomeMessage = showWelcomeMessage;
