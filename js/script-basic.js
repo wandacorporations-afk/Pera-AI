@@ -435,5 +435,5 @@ function handleSettings() {
 }
 
 function handleCommunity() {
-    window.open('https://chat.whatsapp.com/FmTPOf2J4ICKSqez5U12Zi?mode=gi_t', '_blank');
+    window.open('https://t.me/pera_ai', '_blank');
 }
