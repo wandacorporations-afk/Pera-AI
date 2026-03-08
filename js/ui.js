@@ -77,26 +77,9 @@ let currentStreamingMessage = '';
 let streamingMessageId = null;
 
 // ✅ NUEVA: Cargar configuración de Enter desde localStorage
-let enterToSend = localStorage.getItem('pera_enter_to_send') !== 'false'; // true por defecto
+let enterToSend = localStorage.getItem('pera_enter_to_send') !== 'true'; // true por defecto
 
-// Función para mostrar mensaje de bienvenida
-function showWelcomeMessage() {
-    if (document.getElementById('welcomeMessage')) return;
-    
-    const welcomeDiv = document.createElement('div');
-    welcomeDiv.className = 'welcome-message';
-    welcomeDiv.id = 'welcomeMessage';
-    
-    // Usar nombre si existe
-    const userName = localStorage.getItem('pera_user_name');
-    if (userName) {
-        welcomeDiv.innerHTML = `<img src="img/pera-ai-logo2.jpg" alt="Logo Pera AI" />`;
-    } else {
-        welcomeDiv.innerHTML = '<img src="img/pera-ai-logo2.jpg" alt="Logo Pera AI" />';
-    }
-    
-    messageContainer.insertBefore(welcomeDiv, messageContainer.firstChild);
-}
+
 
 // Función para crear burbuja de usuario
 function createUserBubble(message) {
@@ -110,16 +93,7 @@ function createUserBubble(message) {
     bubbleDiv.className = 'bubble user-bubble';
     bubbleDiv.innerHTML = marked.parse(processedContent);
     
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'message-actions';
-    actionsDiv.innerHTML = `
-        <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
-            <span class="material-symbols-outlined" translate="no">content_copy</span>
-        </button>
-    `;
-    
     messageDiv.appendChild(bubbleDiv);
-    messageDiv.appendChild(actionsDiv);
     return messageDiv;
 }
 
@@ -141,9 +115,6 @@ function createBotBubble(message, isStreaming = false) {
     actionsDiv.innerHTML = `
         <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
             <span class="material-symbols-outlined" translate="no">content_copy</span>
-        </button>
-        <button class="icon-btn action-btn share-msg-btn" aria-label="Compartir mensaje" onclick="shareMessage(this)">
-            <span class="material-symbols-outlined" translate="no">forward</span>
         </button>
     `;
     
@@ -210,15 +181,12 @@ function finalizeStreamingMessage() {
             bubble.innerHTML = marked.parse(currentStreamingMessage);
         }
         
-        // AÑADIR LAS ACCIONES AHORA (copiar/compartir)
+        // AÑADIR LAS ACCIONES AHORA (copiar)
         const actionsDiv = streamingMsg.querySelector('.message-actions');
         if (actionsDiv) {
             actionsDiv.innerHTML = `
                 <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
                     <span class="material-symbols-outlined" translate="no">content_copy</span>
-                </button>
-                <button class="icon-btn action-btn share-msg-btn" aria-label="Compartir mensaje" onclick="shareMessage(this)">
-                    <span class="material-symbols-outlined" translate="no">forward</span>
                 </button>
             `;
             actionsDiv.style.opacity = '1'; // Mostrar acciones
@@ -339,22 +307,6 @@ window.copyCodeBlock = function(button) {
     });
 };
 
-// Función para compartir mensaje
-window.shareMessage = function(button) {
-    const messageDiv = button.closest('.message-ia');
-    const bubble = messageDiv.querySelector('.bubble');
-    const text = bubble.textContent;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'Mensaje de Pera AI',
-            text: text
-        });
-    } else {
-        copyMessage(button);
-    }
-};
-
 // Función para scroll al último mensaje
 function scrollToBottom() {
     messageContainer.scrollTo({
@@ -379,15 +331,6 @@ function resetTextarea() {
 // Manejar foco del textarea
 function handleTextareaFocus() {
     messageArea.classList.add('sticky');
-}
-
-// ✅ NUEVA: Recargar mensaje de bienvenida cuando cambia el nombre
-function refreshWelcomeMessage() {
-    const existingWelcome = document.getElementById('welcomeMessage');
-    if (existingWelcome) {
-        existingWelcome.remove();
-    }
-    showWelcomeMessage();
 }
 
 // Inicializar UI
@@ -415,8 +358,6 @@ function initUI() {
             }
         }
     });
-    
-    showWelcomeMessage();
 }
 
 const botones = document.querySelectorAll('.toolbar-btn');
@@ -437,8 +378,6 @@ botones.forEach(boton => {
 });
 
 // Exportar funciones
-window.showWelcomeMessage = showWelcomeMessage;
-window.refreshWelcomeMessage = refreshWelcomeMessage;
 window.createUserBubble = createUserBubble;
 window.createBotBubble = createBotBubble;
 window.updateStreamingMessage = updateStreamingMessage;

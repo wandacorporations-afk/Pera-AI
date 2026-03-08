@@ -1,20 +1,24 @@
-    .welcome-message {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 12px;
-        color: #ffffff;
-        pointer-events: none;
-        padding: 15px 12px;
-    }
-    
-    .welcome-message img{
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-    }
-    
+.welcome-chat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-animated {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.profile-animated img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
     .typing-indicator-container {
         opacity: 1;
         transition: all 0.3s ease;

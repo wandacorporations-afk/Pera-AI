@@ -13,7 +13,6 @@ function setupEventListeners() {
     const thinkBtn = document.getElementById('thinkBtn');
     const searchBtn = document.getElementById('searchBtn');
     const newChatBtns = document.querySelectorAll('#newChatBtnDesktop, #newChatBtnMobile');
-    const shareBtns = document.querySelectorAll('#shareBtnDesktop, #shareBtnMobile');
     const settingsBtns = document.querySelectorAll('#settingsBtnDesktop, #settingsBtnMobile');
     const communityBtn = document.getElementById('communityBtn');
 
@@ -22,7 +21,6 @@ function setupEventListeners() {
     searchBtn.addEventListener('click', () => handleModelToggle('search', searchBtn));
     
     newChatBtns.forEach(btn => btn.addEventListener('click', handleNewChat));
-    shareBtns.forEach(btn => btn.addEventListener('click', handleShare));
     settingsBtns.forEach(btn => btn.addEventListener('click', openSettingsModal)); // ✅ Abrir modal
     if (communityBtn) communityBtn.addEventListener('click', handleCommunity);
 }
@@ -412,20 +410,6 @@ function handleNewChat() {
     
     if (!chatTextarea.matches(':focus')) {
         messageArea.classList.remove('sticky');
-        showWelcomeMessage();
-    }
-}
-
-function handleShare() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Pera AI - Chatbot Inteligente',
-            text: '¡Prueba Pera AI, un asistente inteligente!',
-            url: window.location.href
-        });
-    } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('¡Link copiado al portapapeles!');
     }
 }
 
