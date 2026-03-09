@@ -228,7 +228,7 @@
   max-width: 500px;
   max-height: 90vh; /* AÑADIDO: límite de altura */
   background: linear-gradient(145deg, #1e1f21 0%, #151517 100%);
-  border-radius: 2rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   transform: scale(0.9) translateY(20px);
