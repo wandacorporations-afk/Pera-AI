@@ -21,6 +21,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+a{
+  color: var(--accent-color);
+}
+
 /* Variables y configuración base*/
 :root {
   --bg-primary: #151517;
@@ -190,6 +194,10 @@ body::-webkit-scrollbar {
 
 .community-btn .material-symbols-outlined {
   font-size: 1.30rem;
+}
+
+.icon-btn .material-symbols-outlined{
+  font-size: 22px;
 }
 
 
@@ -460,6 +468,7 @@ body::-webkit-scrollbar {
 .settings-input-hint,
 .settings-select-hint {
     font-size: 0.8rem;
+    line-height: 1.6;
     color: #9ca3af;
     margin: 0.25rem 0 0 0;
 }
@@ -865,7 +874,7 @@ body::-webkit-scrollbar {
 /* Burbujas de chat */
 .bubble {
   max-width: 100%;
-  border-radius: 18px;
+  border-radius: 25px;
   padding: 10px 15px;
   line-height: 1.8;
   font-size: 17px;
@@ -1228,7 +1237,9 @@ body::-webkit-scrollbar {
   background-color: #2a2c2e;
   color: var(--text-primary);
   align-self: flex-end;
-  max-width: 90% !important;
+  max-width: 85% !important;
+  border-bottom-right-radius: 10px;
+  border: 1px solid rgba(255, 255, 255,0.1);
 }
 
 /* Acciones del mensaje (copiar/compartir) */
@@ -1313,7 +1324,7 @@ body::-webkit-scrollbar {
   background: #222;
   padding: 10px 10px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.30);
   margin: auto;
 }
 
@@ -1382,7 +1393,7 @@ body::-webkit-scrollbar {
   background-color: var(--surface-tertiary);
   color: #fff;
   gap: 5px;
-  border: 1px solid #333333;
+  border: 1px solid #444;
   cursor: none;
   border-radius: 20px;
 }
@@ -1453,7 +1464,7 @@ body::-webkit-scrollbar {
   }
   
   .user-bubble{
-    max-width: 90% !important;
+    max-width: 85% !important;
   }
 
   .message-area {
@@ -1479,7 +1490,7 @@ body::-webkit-scrollbar {
   }
   
   .user-bubble{
-    max-width: 90% !important;
+    max-width: 85% !important;
   }
   
 
@@ -1514,7 +1525,7 @@ body::-webkit-scrollbar {
   }
   
   .user-bubble{
-    max-width: 90% !important;
+    max-width: 85% !important;
   }
 
   .message-container {

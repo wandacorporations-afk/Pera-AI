@@ -50,7 +50,7 @@
       
       <div class="mobile-actions">
         <button class="icon-btn settings-btn" id="settingsBtnMobile" aria-label="Settings">
-          <span class="material-symbols-outlined" translate="no">menu</span>
+          <span class="material-symbols-outlined" translate="no">dock_to_right</span>
         </button>
         <button class="community-btn" id="communityBtn">
           <span class="material-symbols-outlined" translate="no">mobile_camera_front</span>
@@ -110,6 +110,29 @@
           <p class="settings-input-hint">The bot will address you by this name or nickname</p>
         </div>
       </div>
+      
+      <h3 class="settings-section-title">API Key Pollinations</h3>
+<div class="settings-section">
+    <div class="settings-section-content">
+        <input 
+            type="password" 
+            class="settings-input" 
+            id="apiKeyInput" 
+            placeholder="sk_... o pk_..."
+        >
+        <div class="settings-button-group">
+            <button class="settings-btn settings-btn-primary" id="apiActionBtn">
+                Guardar API key
+            </button>
+        </div>
+        <p class="settings-input-hint">
+           🔑 La API key es <strong>gratuita</strong> en Pollinations.ai<br>
+           • <a href="https://pollinations.ai" target="_blank" style="color:var(--accent-color)">Registro gratuito</a> (10-15 min)<br>
+           • ⚡ <strong>Servicio express $3 USD</strong>: Te ahorras el registro y configuración, te entrego la key lista por <a href="https://t.me/RDK2003" target="_blank" style="color: var(--accent-color)">Telegram</a>
+        </p>
+    </div>
+</div>
+
       
       
       <h3 class="settings-section-title">
@@ -257,7 +280,7 @@
   </div>
 </div>
       
-      <p class="version-website">Version: 0.0 (Alpha)</p>
+      <p class="version-website">Version: 0.1.2 (Alpha)</p>
     </div>
   </div>
 </div>
@@ -266,7 +289,7 @@
   <div class="message-container" id="messageContainer">
     <div class="welcome-chat">
        <div class="profile-animated">
-         <img src="img/pera-ai-logo2.jpg" alt="Logo Pera AI">
+         <img src="img/pera-ai-logo4.png" alt="Logo Pera AI">
         </div>
       </div>
     <div class="messages-dynamic" id="messagesDynamic"></div>
@@ -302,6 +325,66 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL TIP - API KEY REQUIRED -->
+<div class="modal-tip-overlay" id="modalTipOverlay">
+  <div class="modal-tip" id="modalTip">
+    
+    <div class="modal-tip-header">
+      <div class="modal-tip-icon">
+        <span class="material-symbols-outlined" translate="no">vpn_key</span>
+      </div>
+      <h3 class="modal-tip-title">Se requiere API Key</h3>
+    </div>
+    
+    <div class="modal-tip-content">
+      <p class="modal-tip-message">
+        Para que <strong>Pera AI</strong> pueda funcionar, necesitas una 
+        <strong>Llave de Acceso (API Key)</strong> de Pollinations.ai.
+      </p>
+      
+      <div class="modal-tip-features">
+  <div class="feature-item">
+    <span class="material-symbols-outlined">bolt</span>
+    <span>Ahorra 10-15 minutos de registro y configuración</span>
+  </div>
+  <div class="feature-item">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span>Key pre-activada y lista para usar al instante</span>
+  </div>
+  <div class="feature-item">
+    <span class="material-symbols-outlined">support_agent</span>
+    <span>Soporte personalizado vía Telegram incluido</span>
+  </div>
+</div>
+      
+      <div class="modal-tip-divider">
+        <span>Elige una opción</span>
+      </div>
+      
+      <div class="modal-tip-buttons">
+        <a href="https://pollinations.ai" target="_blank" class="modal-tip-btn modal-tip-btn-primary" id="getApiKeyBtn">
+          <span class="material-symbols-outlined">download</span>
+          Obtener API Key Gratis
+        </a>
+        
+        <a href="https://t.me/RDK2003" target="_blank" class="modal-tip-btn modal-tip-btn-secondary" id="buyApiKeyBtn">
+           <span class="material-symbols-outlined">electric_bolt</span>
+             $3 USD (lista en 2 min)
+        </a>
+      </div>
+      
+      <p class="modal-tip-footer">
+         La API key de Pollinations es <strong>gratuita</strong>; pagas por la configuración express y soporte
+      </p>
+    </div>
+    
+    <button class="modal-tip-close" id="modalTipClose" aria-label="Cerrar">
+      <span class="material-symbols-outlined" translate="no">close</span>
+    </button>
+    
   </div>
 </div>
   

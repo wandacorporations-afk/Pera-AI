@@ -1,12 +1,94 @@
 // script-basic.js
 // Archivo principal que orquesta toda la funcionalidad
 
+// ===== DOM CONTENT LOADED (MODIFICADO) =====
 document.addEventListener('DOMContentLoaded', () => {
     initUI();
     setupEventListeners();
-    initSettingsModal(); // ✅ Inicializar modal
-    loadSettingsToUI(); // ✅ Cargar configuraciones guardadas
+    initSettingsModal();
+    initModalTip(); // ✅ NUEVO: Inicializar modal tip
+    loadSettingsToUI();
+    setupApiKeyLogic();
+    
+    // Verificar API key al cargar la página
+    setTimeout(() => {
+        checkApiKeyAndShowModal();
+    }, 500);
+    
+    if (typeof window.checkWelcomeChatOnLoad === 'function') {
+        window.checkWelcomeChatOnLoad();
+    }
 });
+
+
+
+// ===== SETUP API KEY LOGIC (MODIFICADA) =====
+function setupApiKeyLogic() {
+    const apiInput = document.getElementById('apiKeyInput');
+    const apiBtn = document.getElementById('apiActionBtn');
+
+    if (!apiInput || !apiBtn) return;
+
+    // Verificar al cargar
+    const savedKey = localStorage.getItem('pera_api_key');
+    if (savedKey && validateApiKey(savedKey)) {
+        apiInput.value = "****************";
+        apiInput.disabled = true;
+        apiBtn.textContent = "Borrar API key";
+        apiBtn.classList.replace('settings-btn-primary', 'settings-btn-secondary');
+        closeModalTip();
+    } else if (savedKey) {
+        // Si la key guardada no es válida, borrarla
+        localStorage.removeItem('pera_api_key');
+        if (window.API_CONFIG) window.API_CONFIG.apiKey = "";
+    }
+
+    apiBtn.addEventListener('click', () => {
+        const currentStoredKey = localStorage.getItem('pera_api_key');
+
+        // CASO A: BORRAR
+        if (currentStoredKey) {
+            localStorage.removeItem('pera_api_key');
+            apiInput.value = "";
+            apiInput.disabled = false;
+            apiBtn.textContent = "Guardar API key";
+            apiBtn.classList.replace('settings-btn-secondary', 'settings-btn-primary');
+            if (window.API_CONFIG) window.API_CONFIG.apiKey = "";
+            
+            openModalTip(); // Mostrar modal porque ya no hay key
+            return;
+        }
+
+        // CASO B: GUARDAR
+        const newKey = apiInput.value.trim();
+        if (!newKey) return;
+
+        // Validar formato antes de guardar
+        if (!validateApiKey(newKey)) {
+            alert('⚠️ La API key debe comenzar con "sk_" o "pk_"');
+            return;
+        }
+
+        // Fase 1: Loading
+        apiBtn.textContent = "Guardando API key...";
+        apiBtn.disabled = true;
+
+        // Fase 2: Éxito
+        setTimeout(() => {
+            localStorage.setItem('pera_api_key', newKey);
+            if (window.API_CONFIG) window.API_CONFIG.apiKey = newKey;
+            
+            apiInput.value = "****************";
+            apiInput.disabled = true;
+            apiBtn.disabled = false;
+            apiBtn.textContent = "Borrar API key";
+            apiBtn.classList.replace('settings-btn-primary', 'settings-btn-secondary');
+            
+            closeModalTip(); // Cerrar modal porque ya tenemos key válida
+        }, 1000);
+    });
+}
+
 
 function setupEventListeners() {
     const sendBtn = document.getElementById('sendBtn');
@@ -28,6 +110,70 @@ function setupEventListeners() {
 // ===== FUNCIONES DEL MODAL DE CONFIGURACIÓN =====
 
 let settingsModal, settingsOverlay, closeBtn;
+// ===== MODAL TIP - API KEY =====
+let modalTipOverlay, modalTipClose;
+
+// ===== VALIDAR FORMATO API KEY =====
+function validateApiKey(key) {
+    if (!key) return false;
+    return key.startsWith('sk_') || key.startsWith('pk_');
+}
+
+// ===== ABRIR MODAL TIP =====
+function openModalTip() {
+    if (modalTipOverlay) {
+        modalTipOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// ===== CERRAR MODAL TIP =====
+function closeModalTip() {
+    if (modalTipOverlay) {
+        modalTipOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// ===== INICIALIZAR MODAL TIP =====
+function initModalTip() {
+    modalTipOverlay = document.getElementById('modalTipOverlay');
+    modalTipClose = document.getElementById('modalTipClose');
+    
+    if (!modalTipOverlay) return;
+    
+    // Cerrar al hacer clic en X
+    if (modalTipClose) {
+        modalTipClose.addEventListener('click', closeModalTip);
+    }
+    
+    // Cerrar al hacer clic fuera
+    modalTipOverlay.addEventListener('click', (e) => {
+        if (e.target === modalTipOverlay) {
+            closeModalTip();
+        }
+    });
+    
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalTipOverlay.classList.contains('active')) {
+            closeModalTip();
+        }
+    });
+}
+
+// ===== VERIFICAR API KEY Y MOSTRAR MODAL =====
+function checkApiKeyAndShowModal() {
+    const apiKey = localStorage.getItem('pera_api_key');
+    
+    if (apiKey && validateApiKey(apiKey)) {
+        closeModalTip();
+        return true;
+    }
+    
+    openModalTip();
+    return false;
+}
 
 function initSettingsModal() {
     settingsOverlay = document.getElementById('settingsModalOverlay');
@@ -96,9 +242,6 @@ function initSettingsControls() {
             if (userNameInput) {
                 const name = userNameInput.value.trim();
                 setUserName(name || '');
-                
-                // Actualizar mensaje de bienvenida
-                refreshWelcomeMessage();
                 
                 // Feedback visual
                 saveNameBtn.textContent = '✓ Guardado';
@@ -343,11 +486,36 @@ function loadSettingsToUI() {
     if (temperatureValue) temperatureValue.textContent = temperature;
 }
 
-// ===== FUNCIONES PRINCIPALES DEL CHAT =====
-
+// ===== HANDLE SEND MESSAGE (MODIFICADA) =====
 async function handleSendMessage() {
     const message = chatTextarea.value.trim();
     if (!message || isTyping) return;
+
+    // VERIFICAR API KEY ANTES DE ENVIAR
+    const apiKey = localStorage.getItem('pera_api_key');
+    if (!apiKey || !validateApiKey(apiKey)) {
+        openModalTip();
+        
+        const warningBubble = createBotBubble(
+           "🔑 **Necesitas una API Key para continuar**\n\n" +
+           "Pollinations.ai ofrece keys **gratuitas**, pero requieren registro.\n\n" +
+           "**Opciones:**\n" +
+           "• 🆓 **Gratis**: Regístrate en [pollinations.ai](https://pollinations.ai) (10-15 min)\n" +
+           "• ⚡ **Express ($3 USD)**: Te consigo una key ya configurada y activada en minutos por [Telegram](https://t.me/RDK2003)\n\n" +
+           "_El cobro es por el servicio de configuración, no por la key_"
+       );
+        messagesDynamic.appendChild(warningBubble);
+        scrollToBottom();
+        if (typeof window.hideWelcomeChat === 'function') {
+           window.hideWelcomeChat();
+        }   
+        return;
+    }
+
+    // Ocultar welcome chat al enviar mensaje
+    if (typeof window.hideWelcomeChat === 'function') {
+        window.hideWelcomeChat();
+    }
 
     messageArea.classList.add('sticky');
 
@@ -400,6 +568,11 @@ function handleNewChat() {
     clearContext();
     messagesDynamic.innerHTML = '';
     setActiveModel('base');
+    
+    // ✅ NUEVO: Mostrar welcome chat al iniciar nuevo chat
+    if (typeof window.showWelcomeChat === 'function') {
+        window.showWelcomeChat();
+    }
     
     const thinkBtn = document.getElementById('thinkBtn');
     const searchBtn = document.getElementById('searchBtn');

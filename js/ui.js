@@ -161,7 +161,6 @@ function updateStreamingMessage(newChunk) {
         // Usar requestAnimationFrame para evitar parpadeos
         requestAnimationFrame(() => {
             bubble.innerHTML = marked.parse(currentStreamingMessage);
-            scrollToBottom();
         });
     }
 }
@@ -377,7 +376,69 @@ botones.forEach(boton => {
     });
 });
 
-// Exportar funciones
+// ===== CONTROL DE WELCOME CHAT =====
+const welcomeContainer = document.querySelector('.welcome-chat');
+
+function hideWelcomeChat() {
+    if (welcomeContainer && welcomeContainer.style.display !== 'none') {
+        welcomeContainer.style.display = 'none';
+        console.log('👋 Welcome chat ocultado');
+    }
+}
+
+function showWelcomeChat() {
+    if (welcomeContainer && welcomeContainer.style.display !== 'flex') {
+        welcomeContainer.style.display = 'flex'; // Porque en CSS tiene display: flex
+        console.log('👋 Welcome chat mostrado');
+    }
+}
+
+// Verificar si hay mensajes al cargar la página (por si hay conversación guardada)
+function checkWelcomeChatOnLoad() {
+    if (!welcomeContainer) return;
+    
+    // Si hay mensajes en el contenedor dinámico, ocultar welcome
+    if (messagesDynamic && messagesDynamic.children.length > 0) {
+        hideWelcomeChat();
+    } else {
+        showWelcomeChat();
+    }
+}
+
+// ===== SHOW NOTIFICATION (OPCIONAL) =====
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 100px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        z-index: 9999;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Exportar Funciones
+window.showNotification = showNotification;
+window.hideWelcomeChat = hideWelcomeChat;
+window.showWelcomeChat = showWelcomeChat;
+window.checkWelcomeChatOnLoad = checkWelcomeChatOnLoad;
 window.createUserBubble = createUserBubble;
 window.createBotBubble = createBotBubble;
 window.updateStreamingMessage = updateStreamingMessage;

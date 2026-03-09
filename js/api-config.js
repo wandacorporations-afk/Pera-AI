@@ -3,8 +3,7 @@
 
 const API_CONFIG = {
     // 🔐 API Key
-    apiKey: 'sk_ZkpCEOhkuwM4oFOeKpWJzqeInHM9aUjT',
-    
+    apiKey: localStorage.getItem('pera_api_key'),
     // URLs base
     baseURL: 'https://gen.pollinations.ai',
     
