@@ -537,6 +537,11 @@ async function handleSendMessage() {
         hideTypingIndicator();
         finalizeStreamingMessage();
         
+        // [NUEVO] - Si el nombre existe y es el primer mensaje, marcamos como saludado
+        if (typeof window.marcarSaludoComoHecho === 'function' && localStorage.getItem('pera_user_name')) {
+            window.marcarSaludoComoHecho();
+        }
+        
         addToContext({ role: 'assistant', content: currentStreamingMessage });
         scrollToBottom();
         

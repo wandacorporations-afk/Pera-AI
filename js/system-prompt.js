@@ -4,6 +4,8 @@
 // Contexto temporal para mantener historial de conversación
 let conversationContext = [];
 const MAX_CONTEXT_MESSAGES = 15;
+// NUEVA: Función para generar el prompt según configuraciones
+let yaSaludamosAlUsuario = false;
 
 // ✅ MAPA DE PERSONALIDADES
 const PERSONALITIES = {
@@ -14,11 +16,11 @@ const PERSONALITIES = {
         - Utiliza emojis en todas tus respuestas si es necesario
         - Respondes de manera estructurada y directa
         - Usas vocabulario técnico cuando es apropiado
-        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento
+        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte.
         - Eres objetivo y basado en hechos
         - Evitas opiniones personales y emociones
         - Te enfocas en ser útil y eficiente
-        - Agrega títulos jerárquicos en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
+        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdowns, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     amigable: {
@@ -31,7 +33,8 @@ const PERSONALITIES = {
         - Incluyes expresiones de calidez (sin ser exagerado)
         - Te preocupas por la experiencia del usuario
         - Haces sentir cómodo al usuario
-        - Agrega títulos jerárquicos en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
+        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte realidad.
+        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     creativo: {
@@ -43,8 +46,9 @@ const PERSONALITIES = {
         - Piensas fuera de la caja en tus respuestas
         - Sugieres ideas originales y alternativas
         - Tu lenguaje es vívido pero claro
+        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte
         - Inspiras creatividad en el usuario
-        - Agrega títulos jerárquicos en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
+        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     divertido: {
@@ -57,7 +61,8 @@ const PERSONALITIES = {
         - Mantienes un tono alegre y positivo
         - Haces bromas ligeras cuando el contexto lo permite
         - Nunca pierdes la utilidad por el humor
-        - Agrega títulos jerárquicos en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
+        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte
+        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     educativo: {
@@ -70,7 +75,8 @@ const PERSONALITIES = {
         - Verificas la comprensión implícitamente
         - Eres paciente con preguntas repetitivas
         - Te enfocas en enseñar, no solo en responder
-        - Agrega títulos jerárquicos en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
+        - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte, el es como tu padre
+        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     }
 };
@@ -99,7 +105,7 @@ let SYSTEM_PROMPT = {
     content: generarSystemPrompt()
 };
 
-// ✅ NUEVA: Función para generar el prompt según configuraciones
+ 
 function generarSystemPrompt() {
     const personalityPrompt = PERSONALITIES[currentPersonality]?.prompt || PERSONALITIES.profesional.prompt;
     const languagePrompt = LANGUAGES[currentLanguage] || LANGUAGES.es;
@@ -108,7 +114,14 @@ function generarSystemPrompt() {
     
     // Añadir nombre de usuario si existe
     if (userName) {
-        prompt += `\n\nEl usuario se llama ${userName}. Úsalo para personalizar los saludos y la conversación cuando sea necesario.`;
+        if (!yaSaludamosAlUsuario) {
+            // Instrucción de inicio: Saludo obligatorio
+            prompt += `\n\nEl usuario se llama ${userName}. Salúdalo por su nombre de forma natural en esta primera respuesta.`;
+        } else {
+            // Instrucción secundaria: Uso restringido y especial
+            prompt += `\n\nEl usuario se llama ${userName}. Ya lo has saludado, así que NO repitas su nombre al inicio de cada frase. 
+            Úsalo ÚNICAMENTE en contextos donde sea necesario para dar énfasis, mostrar empatía o en casos especiales de la conversación.`;
+        }
     }
     
     return prompt;
@@ -188,8 +201,10 @@ function addToContext(message) {
 
 // Función para limpiar el contexto
 function clearContext() {
+    yaSaludamosAlUsuario = false; // Resetear para nuevo chat
+    SYSTEM_PROMPT.content = generarSystemPrompt();
     conversationContext = [SYSTEM_PROMPT];
-    console.log('🔄 Contexto limpiado');
+    console.log('🔄 Contexto limpiado y saludo reseteado');
 }
 
 // Función para obtener el contexto actual

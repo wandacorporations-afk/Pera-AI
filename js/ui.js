@@ -405,7 +405,7 @@ function checkWelcomeChatOnLoad() {
     }
 }
 
-// ===== SHOW NOTIFICATION (OPCIONAL) =====
+// ===== SHOW NOTIFICATION=====
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
