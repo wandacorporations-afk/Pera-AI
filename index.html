@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="es">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Pera AI - Assistant | Project 79</title>
-    <meta name="description" content="Meet Pera AI, the mysterious and powerful AI assistant from Project 79. Experience high-level reasoning, web search, and a personality that evolves.">
-    <meta name="keywords" content="Pera AI, AI Assistant, Project 79, DeepSeek, Chatbot, Artificial Intelligence, Mystery AI">
+    <title>Pera AI - Asistente | Proyecto 79</title>
+    <meta name="description" content="Conoce a Pera AI, el misterioso y poderoso asistente de IA del Proyecto 79. Experimenta razonamiento de alto nivel, búsqueda web y una personalidad que evoluciona.">
+    <meta name="keywords" content="Pera AI, Asistente de IA, Proyecto 79, DeepSeek, Chatbot, Inteligencia Artificial, IA Misteriosa">
     <meta name="author" content="Teo">
     <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Pera AI - Assistant">
-    <meta property="og:description" content="An AI with mysteries yet to be solved. Join the Alpha stage of Pera AI.">
+    <meta property="og:title" content="Pera AI - Asistente">
+    <meta property="og:description" content="Una IA con misterios aún por resolver. Únete a la etapa Alpha de Pera AI.">
     <meta property="og:image" content="https://pera-ia.netlify.app/img/pera-ai-logo3.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Pera AI - Project 79">
-    <meta name="twitter:description" content="Discover the secrets behind Pera AI's 'glitches' and its advanced reasoning capabilities.">
+    <meta name="twitter:title" content="Pera AI - Proyecto 79">
+    <meta name="twitter:description" content="Descubre los secretos detrás de los 'fallos' de Pera AI y sus capacidades avanzadas de razonamiento.">
     <meta name="twitter:image" content="https://pera-ia.netlify.app/img/pera-ai-logo3.jpg">
 
     
     <meta name="google-site-verification" content="deQPXfKgSLBy-IOb51-zBkvnbm7DpJxouDRLTugct6k" />
-    <meta name="google-site-verification" content="c3e-dNedlLz5uFRasm2bvrbChosZD3aXPRqr8xOeWMs" />
+    <meta name="google-site-verification" content="c3e-dNedlLz5uFRasm2bvrbChosZD3aXPRqr8xOeWms" />
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&text=+tune+sync+close+search+desktop_landscape+colors+photo_size_select_large+keyboard_arrow_up+download+share+favorite+play_arrow+more_horiz" rel="stylesheet" /> 
@@ -32,8 +32,8 @@
     <link rel="stylesheet" href="css/additional.css" type="text/css" media="all" />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
-  </head>
-  <body>
+</head>
+<body>
     
 <header class="chat-header" id="mainHeader">
   <div class="header-container">
@@ -41,38 +41,37 @@
     <div class="header-left">
       <div class="desktop-actions">
         <div class="avatar-container">
-          <img src="img/pera-ai-logo2.jpg" alt="Pera AI Avatar" />
+          <img src="img/pera-ai-logo2.png" alt="Avatar de Pera AI" />
         </div>
-        <button class="icon-btn settings-btn" id="settingsBtnDesktop" aria-label="Settings">
+        <button class="icon-btn settings-btn" id="settingsBtnDesktop" aria-label="Configuración">
           <i class="bi bi-nut"></i>
         </button>
       </div>
       
       <div class="mobile-actions">
-        <button class="icon-btn settings-btn" id="settingsBtnMobile" aria-label="Settings">
+        <button class="icon-btn settings-btn" id="settingsBtnMobile" aria-label="Configuración">
           <i class="bi bi-nut"></i>
         </button>
         <button class="community-btn" id="communityBtn">
-          <span class="material-symbols-outlined" translate="no">family_group</span>
-          <span class="community-text">Community</span>
+          <span class="material-symbols-outlined" translate="no">group</span>
+          <span class="community-text">Comunidad</span>
         </button>
       </div>
     </div>
 
     <div class="header-right">
       <div class="desktop-actions">
-        <button class="icon-btn new-chat-btn" id="newChatBtnDesktop" aria-label="New Chat">
+        <button class="icon-btn new-chat-btn" id="newChatBtnDesktop" aria-label="Nuevo Chat">
           <span class="material-symbols-outlined" translate="no">maps_ugc</span> 
         </button>
       </div>
 
       <div class="mobile-actions">
-        <button class="icon-btn new-chat-btn" id="newChatBtnMobile" aria-label="New Chat">
+        <button class="icon-btn new-chat-btn" id="newChatBtnMobile" aria-label="Nuevo Chat">
           <span class="material-symbols-outlined" translate="no">maps_ugc</span>
         </button>
       </div>
     </div>
-
   </div>
 </header>
 
@@ -80,15 +79,15 @@
   <div class="settings-modal" id="settingsModal">
     
     <div class="settings-modal-header">
-      <h3 class="settings-modal-title">Settings</h3>
-      <button class="settings-modal-close" id="settingsModalClose" aria-label="Close">
+      <h3 class="settings-modal-title">Configuración</h3>
+      <button class="settings-modal-close" id="settingsModalClose" aria-label="Cerrar">
         <span class="material-symbols-outlined" translate="no">close</span>
       </button>
     </div>
 
     <div class="settings-modal-content">
       <h3 class="settings-section-title">
-          Username
+          ¿Cómo debería llamarte?
       </h3>
       <div class="settings-section">
         <div class="settings-section-content">
@@ -101,63 +100,39 @@
           >
           <div class="settings-button-group">
             <button class="settings-btn settings-btn-secondary" id="clearUserNameBtn">
-              Clear
+              Limpiar
             </button>
             <button class="settings-btn settings-btn-primary" id="saveUserNameBtn">
-              Save
+              Guardar
             </button>
           </div>
-          <p class="settings-input-hint">The bot will address you by this name or nickname</p>
+          <p class="settings-input-hint">El bot te llamará por este nombre o apodo</p>
         </div>
       </div>
-      
-      <h3 class="settings-section-title">API Key Pollinations</h3>
-<div class="settings-section">
-    <div class="settings-section-content">
-        <input 
-            type="password" 
-            class="settings-input" 
-            id="apiKeyInput" 
-            placeholder="sk_... o pk_..."
-        >
-        <div class="settings-button-group">
-            <button class="settings-btn settings-btn-primary" id="apiActionBtn">
-                Guardar API key
-            </button>
-        </div>
-        <p class="settings-input-hint">
-            La API key es <strong>gratuita</strong> en Pollinations.ai<br>
-            <a href="https://pollinations.ai" target="_blank" style="color:var(--accent-color)">Registro gratuito</a> (10-15 min)<br>
-            <strong>Servicio express $3 USD</strong>: Te ahorras el registro y configuración, te entrego la key lista por <a href="https://t.me/RDK2003" target="_blank" style="color: var(--accent-color)">Telegram</a>
-        </p>
-    </div>
-</div>
 
-      
-      
       <h3 class="settings-section-title">
-          Language
+          Idioma
         </h3>
       <div class="settings-section">
         <div class="settings-section-content">
           <select class="settings-select" id="languageSelect">
-            <option value="en">English</option>
-            <option value="es">Spanish (System)</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="it">Italian</option>
-            <option value="pt">Portuguese</option>
-            <option value="ja">Japanese</option>
-            <option value="zh">Chinese</option>
-            <option value="ru">Russian</option>
+            <option value="en">Inglés</option>
+            <option value="es">Español (Sistema)</option>
+            <option value="fr">Francés</option>
+            <option value="de">Alemán</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Portugués</option>
+            <option value="ja">Japonés</option>
+            <option value="zh">Chino</option>
+            <option value="ru">Ruso</option>
           </select>
-          <p class="settings-select-hint">8 languages available, more coming soon</p>
+          <p class="settings-select-hint">8 idiomas disponibles, más pronto</p>
         </div>
       </div>
       
       
       <h3 class="settings-section-title">
-          Personality
+          Personalidad
         </h3>
       <div class="settings-section">
         <div class="settings-section-content">
@@ -166,40 +141,40 @@
               <input type="radio" name="personality" value="profesional" checked>
               <span class="settings-radio-custom"></span>
               <span class="settings-radio-text">
-                <strong>Professional</strong>
-                <small>Formal, precise, and direct</small>
+                <strong>Profesional</strong>
+                <small>Formal, preciso y directo</small>
               </span>
             </label>
             <label class="settings-radio-label">
               <input type="radio" name="personality" value="amigable">
               <span class="settings-radio-custom"></span>
               <span class="settings-radio-text">
-                <strong>Friendly</strong>
-                <small>Warm, close, and conversational</small>
+                <strong>Amigable</strong>
+                <small>Cálido, cercano y conversacional</small>
               </span>
             </label>
             <label class="settings-radio-label">
               <input type="radio" name="personality" value="creativo">
               <span class="settings-radio-custom"></span>
               <span class="settings-radio-text">
-                <strong>Creative</strong>
-                <small>Imaginative, with examples and analogies</small>
+                <strong>Creativo</strong>
+                <small>Imaginativo, con ejemplos y analogías</small>
               </span>
             </label>
             <label class="settings-radio-label">
               <input type="radio" name="personality" value="divertido">
               <span class="settings-radio-custom"></span>
               <span class="settings-radio-text">
-                <strong>Fun</strong>
-                <small>Humorous, with emojis and relaxed tone</small>
+                <strong>Divertido</strong>
+                <small>Humorístico, con emojis y tono relajado</small>
               </span>
             </label>
             <label class="settings-radio-label">
               <input type="radio" name="personality" value="educativo">
               <span class="settings-radio-custom"></span>
               <span class="settings-radio-text">
-                <strong>Educational</strong>
-                <small>Didactic, patient, and explanatory</small>
+                <strong>Educativo</strong>
+                <small>Didáctico, paciente y explicativo</small>
               </span>
             </label>
           </div>
@@ -208,7 +183,7 @@
       
       
       <h3 class="settings-section-title">
-          Chat Preferences
+          Preferencias del Chat
         </h3>
       <div class="settings-section">
         <div class="settings-section-content">
@@ -216,8 +191,8 @@
             <input type="checkbox" id="enterToSendCheckbox" checked>
             <span class="settings-checkbox-custom"></span>
             <span class="settings-checkbox-text">
-              Enter to send (Desktop)
-              <small>Disable so Enter only creates a new line</small>
+              Enter para enviar (Escritorio)
+              <small>Deshabilita para que Enter solo cree una nueva línea</small>
             </span>
           </label>
         </div>
@@ -225,13 +200,13 @@
       
       
       <h3 class="settings-section-title">
-          Preferred Model
+          Modelo Preferido
         </h3>
       <div class="settings-section">
         <div class="settings-section-content">
           <select class="settings-select" id="defaultModelSelect">
             </select>
-          <p class="settings-select-hint">Default model on startup. Note: Some AI models may require a subscription.</p>
+          <p class="settings-select-hint">Modelo predeterminado al inicio. Nota: Algunos modelos de IA pueden requerir una suscripción.</p>
         </div>
       </div>
       
@@ -246,9 +221,9 @@
     <div class="slider-modern-container">
       <!-- Labels superior -->
       <div class="slider-modern-labels">
-        <span class="slider-label-precise">Precise</span>
+        <span class="slider-label-precise">Preciso</span>
         <span class="slider-value" id="temperatureValue">0.7</span>
-        <span class="slider-label-creative">Creative</span>
+        <span class="slider-label-creative">Creativo</span>
       </div>
       
       <!-- Contenedor del slider personalizado -->
@@ -275,12 +250,12 @@
         max="1" 
         step="0.1" 
         value="0.7"
-        style="display: none;" <!-- Ocultamos el original -->
+        style="display: none;"> <!-- Ocultamos el original -->
     </div>
   </div>
 </div>
       
-      <p class="version-website">Version: 0.1.2 (Alpha)</p>
+      <p class="version-website">Versión: 0.1.2 (Alpha)</p>
     </div>
   </div>
 </div>
@@ -288,9 +263,18 @@
 <div class="chat-container" id="chatContainer">
   <div class="message-container" id="messageContainer">
     <div class="welcome-chat">
-       <div class="profile-animated">
-         <img src="img/pera-ai-logo4.png" alt="Logo Pera AI">
-        </div>
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="smileGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8A2BE2" /> <stop offset="50%" style="stop-color:#FF007F" /> <stop offset="100%" style="stop-color:#FFD700" /> </linearGradient>
+  </defs>
+  
+  <text x="200" y="80" text-anchor="middle" font-family="sans-serif" font-weight="500" font-size="28" fill="white">
+    ¿cómo puedo ayudarte?
+  </text>
+  
+  <path d="M 130,110 C 160,140 240,140 270,110" stroke="url(#smileGradient)" stroke-width="7" fill="none" stroke-linecap="round" />
+</svg>
       </div>
     <div class="messages-dynamic" id="messagesDynamic"></div>
   </div>
@@ -302,24 +286,24 @@
         <textarea 
           class="chat-textarea" 
           id="chatTextarea" 
-          placeholder="Message Pera AI"
+          placeholder="Mensaje para Pera AI"
           rows="1"
         ></textarea>
       </div>
 
       <div class="input-toolbar">
         <div class="toolbar-left">
-          <button class="toolbar-btn think-btn" id="thinkBtn" aria-label="Think">
+          <button class="toolbar-btn think-btn" id="thinkBtn" aria-label="Pensar">
             <span class="material-symbols-outlined" translate="no">neurology</span> 
-            Think
+            Pensar
           </button>
-          <button class="toolbar-btn search-btn" id="searchBtn" aria-label="Search">
+          <button class="toolbar-btn search-btn" id="searchBtn" aria-label="Buscar">
             <span class="material-symbols-outlined" translate="no">rocket_launch</span> 
-            Search
+            Buscar
           </button>
         </div>
         <div class="toolbar-right">
-          <button class="icon-btn send-btn send-active" id="sendBtn" aria-label="Send message">
+          <button class="icon-btn send-btn send-active" id="sendBtn" aria-label="Enviar mensaje">
             <span class="material-symbols-outlined" translate="no">arrow_upward</span>
           </button>
         </div>
@@ -328,66 +312,6 @@
   </div>
 </div>
 
-<!-- MODAL TIP - API KEY REQUIRED -->
-<div class="modal-tip-overlay" id="modalTipOverlay">
-  <div class="modal-tip" id="modalTip">
-    
-    <div class="modal-tip-header">
-      <div class="modal-tip-icon">
-        <span class="material-symbols-outlined" translate="no">vpn_key</span>
-      </div>
-      <h3 class="modal-tip-title">Se requiere una llave de acceso</h3>
-    </div>
-    
-    <div class="modal-tip-content">
-      <p class="modal-tip-message">
-        Para que <strong>Pera AI</strong> pueda funcionar, necesitas una 
-        <strong>Llave de Acceso (API Key)</strong> de Pollinations.ai.
-      </p>
-      
-      <div class="modal-tip-features">
-  <div class="feature-item">
-    <span class="material-symbols-outlined" translate="no">bolt</span>
-    <span>Ahorra 10-15 minutos de registro y configuración</span>
-  </div>
-  <div class="feature-item">
-    <span class="material-symbols-outlined" translate="no">check_circle</span>
-    <span>Key pre-activada y lista para usar al instante</span>
-  </div>
-  <div class="feature-item">
-    <span class="material-symbols-outlined" translate="no">support_agent</span>
-    <span>Soporte personalizado vía Telegram incluido</span>
-  </div>
-</div>
-      
-      <div class="modal-tip-divider">
-        <span>Elige una opción</span>
-      </div>
-      
-      <div class="modal-tip-buttons">
-        <a href="https://pollinations.ai" target="_blank" class="modal-tip-btn modal-tip-btn-primary" id="getApiKeyBtn">
-          <span class="material-symbols-outlined" translate="no">download</span>
-          Obtener API Key Gratis
-        </a>
-        
-        <a href="https://t.me/RDK2003" target="_blank" class="modal-tip-btn modal-tip-btn-secondary" id="buyApiKeyBtn">
-           <span class="material-symbols-outlined" translate="no">electric_bolt</span>
-             $3 USD (lista en 2 min)
-        </a>
-      </div>
-      
-      <p class="modal-tip-footer">
-         La API key de Pollinations es <strong>gratuita</strong>; pagas por la configuración express y soporte
-      </p>
-    </div>
-    
-    <button class="modal-tip-close" id="modalTipClose" aria-label="Cerrar">
-      <span class="material-symbols-outlined" translate="no">close</span>
-    </button>
-    
-  </div>
-</div>
-  
 <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
 
@@ -404,5 +328,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-  </body>
+</body>
 </html>

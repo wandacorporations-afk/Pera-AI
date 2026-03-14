@@ -3,7 +3,7 @@
 
 const API_CONFIG = {
     // 🔐 API Key
-    apiKey: localStorage.getItem('pera_api_key'),
+    apiKey: "sk_ZkpCEOhkuwM4oFOeKpWJzqeInHM9aUjT",
     // URLs base
     baseURL: 'https://gen.pollinations.ai',
     
@@ -38,56 +38,31 @@ const API_CONFIG = {
 };
 
 // Estado actual del modelo
-let currentModel = API_CONFIG.models.base;
+let currentModel = localStorage.getItem('pera_default_model') || 'openai';
 
-// ✅ MEJORADO: Función para actualizar modelo desde ajustes (AHORA DINÁMICA)
-function setModelFromSettings(modelKey) {
-    if (!modelKey) return currentModel;
-    
-    // Guardar en localStorage
-    localStorage.setItem('pera_default_model', modelKey);
-    
-    // Actualizar modelo actual
-    currentModel = modelKey;
-    
-    console.log('🤖 Modelo cambiado a:', modelKey);
-    return currentModel;
-}
-
-// Función para cambiar el modelo activo (desde botones) - AHORA MÁS FLEXIBLE
-function setActiveModel(modelType) {
-    // Si no hay modelos definidos en API_CONFIG, mantener comportamiento simple
-    if (!API_CONFIG.models || !API_CONFIG.models.reasoning || !API_CONFIG.models.search) {
+function setActiveModel(modelTypeOrKey) {
+    if (modelTypeOrKey !== 'think' && modelTypeOrKey !== 'search') {
+        // Si pasas "base" aquí por error, forzamos que sea "openai"
+        currentModel = modelTypeOrKey === 'base' ? API_CONFIG.models.base : modelTypeOrKey;
+        localStorage.setItem('pera_default_model', currentModel);
         return currentModel;
     }
     
-    switch(modelType) {
+    switch(modelTypeOrKey) {
         case 'think':
-            // Alternar entre reasoning y base
-            currentModel = currentModel === API_CONFIG.models.reasoning ? 
-                          (API_CONFIG.models.base || 'openai') : 
-                          (API_CONFIG.models.reasoning || 'perplexity-reasoning');
+            currentModel = (currentModel === API_CONFIG.models.reasoning) ? 
+                          API_CONFIG.models.base : API_CONFIG.models.reasoning;
             break;
         case 'search':
-            // Alternar entre search y base
-            currentModel = currentModel === API_CONFIG.models.search ? 
-                          (API_CONFIG.models.base || 'openai') : 
-                          (API_CONFIG.models.search || 'gemini-search');
+            currentModel = (currentModel === API_CONFIG.models.search) ? 
+                          API_CONFIG.models.base : API_CONFIG.models.search;
             break;
-        default:
-            currentModel = API_CONFIG.models.base || 'openai';
     }
     
-    // Guardar en localStorage
     localStorage.setItem('pera_default_model', currentModel);
-    
     return currentModel;
 }
 
-// Función para obtener el modelo actual
-function getCurrentModel() {
-    return currentModel;
-}
 
 // ✅ MEJORADO: Ahora usa temperatura desde configuración
 async function callPollinationsAPI(messages, onChunk, options = {}) {
@@ -171,11 +146,9 @@ async function callPollinationsAPI(messages, onChunk, options = {}) {
     }
 }
 
-// Exportar funciones
+// Exportar funciones (eliminamos getCurrentModel y setModelFromSettings)
 window.API_CONFIG = API_CONFIG;
 window.setActiveModel = setActiveModel;
-window.setModelFromSettings = setModelFromSettings;
-window.getCurrentModel = getCurrentModel;
 window.callPollinationsAPI = callPollinationsAPI;
 
 console.log('🚀 API Config cargada correctamente');

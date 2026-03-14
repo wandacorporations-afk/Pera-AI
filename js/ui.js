@@ -115,7 +115,8 @@ function createBotBubble(message, isStreaming = false) {
     actionsDiv.innerHTML = `
         <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
             <span class="material-symbols-outlined" translate="no">content_copy</span>
-        </button>
+        </button> 
+        <span class="model-used">${currentModel}</span>
     `;
     
     messageDiv.appendChild(bubbleDiv);
@@ -187,6 +188,7 @@ function finalizeStreamingMessage() {
                 <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
                     <span class="material-symbols-outlined" translate="no">content_copy</span>
                 </button>
+                <span class="model-used">Modelo IA: ${currentModel}</span>
             `;
             actionsDiv.style.opacity = '1'; // Mostrar acciones
         }
@@ -231,7 +233,7 @@ function showTypingIndicator() {
             <span class="typing-dot"></span>
             <span class="typing-dot"></span>
         </div>
-        <span class="typing-text">Obteniendo respuesta del servidor</span>
+        <span class="typing-text">typing</span>
     `;
     
     typingDiv.appendChild(bubbleDiv);
@@ -243,7 +245,7 @@ function showTypingIndicator() {
         const textElement = document.querySelector('.typing-text');
         if (textElement) {
             const dots = '.'.repeat((step % 3) + 1);
-            textElement.textContent = `Obteniendo respuesta del servidor${dots}`;
+            textElement.textContent = `typing${dots}`;
             step++;
         }
     }, 500);

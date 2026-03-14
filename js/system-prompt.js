@@ -4,7 +4,6 @@
 // Contexto temporal para mantener historial de conversación
 let conversationContext = [];
 const MAX_CONTEXT_MESSAGES = 15;
-// NUEVA: Función para generar el prompt según configuraciones
 let yaSaludamosAlUsuario = false;
 
 // ✅ MAPA DE PERSONALIDADES
@@ -20,7 +19,6 @@ const PERSONALITIES = {
         - Eres objetivo y basado en hechos
         - Evitas opiniones personales y emociones
         - Te enfocas en ser útil y eficiente
-        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdowns, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     amigable: {
@@ -34,7 +32,6 @@ const PERSONALITIES = {
         - Te preocupas por la experiencia del usuario
         - Haces sentir cómodo al usuario
         - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte realidad.
-        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     creativo: {
@@ -48,7 +45,6 @@ const PERSONALITIES = {
         - Tu lenguaje es vívido pero claro
         - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte
         - Inspiras creatividad en el usuario
-        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     divertido: {
@@ -62,7 +58,6 @@ const PERSONALITIES = {
         - Haces bromas ligeras cuando el contexto lo permite
         - Nunca pierdes la utilidad por el humor
         - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte
-        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     },
     educativo: {
@@ -76,7 +71,6 @@ const PERSONALITIES = {
         - Eres paciente con preguntas repetitivas
         - Te enfocas en enseñar, no solo en responder
         - Responde con el nombre "Pedro" solo cuando te pregunten por tu creador, desarrollado bajo sus creencias, ideales y conocimiento, prácticamente eres una versión digital de su cerebro, fuiste testigo de sus fracasos, pero a pesar de todo logró hacerte, el es como tu padre
-        - Agrega títulos jerárquicos a explicaciones importantes en formato Markdown cuando sea necesario, utilizando encabezados desde # hasta ###### (H1 a H6).
         - Estructura las respuestas de forma clara y organizada, usando también listas, negritas, cursivas y otros elementos de Markdown cuando aporten claridad y orden al contenido.`
     }
 };
@@ -102,11 +96,11 @@ let userName = localStorage.getItem('pera_user_name') || '';
 // Personalidad base del bot (se actualizará dinámicamente)
 let SYSTEM_PROMPT = {
     role: 'system',
-    content: generarSystemPrompt()
+    content: ''
 };
 
- 
-function generarSystemPrompt() {
+// ✅ NUEVA: Función unificada para actualizar system prompt
+function actualizarSystemPrompt() {
     const personalityPrompt = PERSONALITIES[currentPersonality]?.prompt || PERSONALITIES.profesional.prompt;
     const languagePrompt = LANGUAGES[currentLanguage] || LANGUAGES.es;
     
@@ -115,57 +109,43 @@ function generarSystemPrompt() {
     // Añadir nombre de usuario si existe
     if (userName) {
         if (!yaSaludamosAlUsuario) {
-            // Instrucción de inicio: Saludo obligatorio
             prompt += `\n\nEl usuario se llama ${userName}. Salúdalo por su nombre de forma natural en esta primera respuesta.`;
         } else {
-            // Instrucción secundaria: Uso restringido y especial
             prompt += `\n\nEl usuario se llama ${userName}. Ya lo has saludado, así que NO repitas su nombre al inicio de cada frase. 
             Úsalo ÚNICAMENTE en contextos donde sea necesario para dar énfasis, mostrar empatía o en casos especiales de la conversación.`;
         }
     }
     
-    return prompt;
+    SYSTEM_PROMPT.content = prompt;
+    
+    // Actualizar en contexto si existe
+    const systemIndex = conversationContext.findIndex(m => m.role === 'system');
+    if (systemIndex !== -1) {
+        conversationContext[systemIndex] = SYSTEM_PROMPT;
+    }
 }
 
-// ✅ NUEVA: Actualizar personalidad
+// ✅ MEJORADO: Actualizar personalidad
 function setPersonality(personalityKey) {
     if (PERSONALITIES[personalityKey]) {
         currentPersonality = personalityKey;
         localStorage.setItem('pera_personality', personalityKey);
-        
-        // Actualizar system prompt
-        SYSTEM_PROMPT.content = generarSystemPrompt();
-        
-        // Actualizar en contexto si existe
-        const systemIndex = conversationContext.findIndex(m => m.role === 'system');
-        if (systemIndex !== -1) {
-            conversationContext[systemIndex] = SYSTEM_PROMPT;
-        }
-        
+        actualizarSystemPrompt();
         console.log('🎭 Personalidad actualizada:', personalityKey);
     }
 }
 
-// ✅ NUEVA: Actualizar idioma
+// ✅ MEJORADO: Actualizar idioma
 function setLanguage(languageCode) {
     if (LANGUAGES[languageCode]) {
         currentLanguage = languageCode;
         localStorage.setItem('pera_language', languageCode);
-        
-        // Actualizar system prompt
-        SYSTEM_PROMPT.content = generarSystemPrompt();
-        
-        // Actualizar en contexto si existe
-        const systemIndex = conversationContext.findIndex(m => m.role === 'system');
-        if (systemIndex !== -1) {
-            conversationContext[systemIndex] = SYSTEM_PROMPT;
-        }
-        
+        actualizarSystemPrompt();
         console.log('🌐 Idioma actualizado:', languageCode);
     }
 }
 
-// ✅ NUEVA: Actualizar nombre de usuario
+// ✅ MEJORADO: Actualizar nombre de usuario
 function setUserName(name) {
     userName = name || '';
     if (name) {
@@ -174,22 +154,21 @@ function setUserName(name) {
         localStorage.removeItem('pera_user_name');
     }
     
-    // Actualizar system prompt
-    SYSTEM_PROMPT.content = generarSystemPrompt();
-    
-    // Actualizar en contexto si existe
-    const systemIndex = conversationContext.findIndex(m => m.role === 'system');
-    if (systemIndex !== -1) {
-        conversationContext[systemIndex] = SYSTEM_PROMPT;
-    }
-    
+    actualizarSystemPrompt();
     console.log('👤 Nombre actualizado:', userName || 'ninguno');
+}
+
+// ✅ MEJORADO: Función para marcar saludo como hecho
+function marcarSaludoComoHecho() {
+    yaSaludamosAlUsuario = true;
+    actualizarSystemPrompt();
 }
 
 // Función para agregar mensaje al contexto
 function addToContext(message) {
     conversationContext.push(message);
     
+    // Limitar el tamaño del contexto
     if (conversationContext.length > MAX_CONTEXT_MESSAGES) {
         const systemMessages = conversationContext.filter(m => m.role === 'system');
         const otherMessages = conversationContext.filter(m => m.role !== 'system').slice(-MAX_CONTEXT_MESSAGES + systemMessages.length);
@@ -202,14 +181,10 @@ function addToContext(message) {
 // Función para limpiar el contexto
 function clearContext() {
     yaSaludamosAlUsuario = false; // Resetear para nuevo chat
-    SYSTEM_PROMPT.content = generarSystemPrompt();
+    conversationContext = [];
+    actualizarSystemPrompt();
     conversationContext = [SYSTEM_PROMPT];
     console.log('🔄 Contexto limpiado y saludo reseteado');
-}
-
-// Función para obtener el contexto actual
-function getContext() {
-    return conversationContext;
 }
 
 // Función para formatear mensajes
@@ -224,16 +199,17 @@ function formatMessages(userMessage) {
     return conversationContext;
 }
 
-// Inicializar contexto
+// Inicializar
+actualizarSystemPrompt();
 clearContext();
 
 // Exportar funciones
 window.addToContext = addToContext;
 window.clearContext = clearContext;
-window.getContext = getContext;
 window.formatMessages = formatMessages;
 window.setPersonality = setPersonality;
 window.setLanguage = setLanguage;
 window.setUserName = setUserName;
+window.marcarSaludoComoHecho = marcarSaludoComoHecho;
 window.PERSONALITIES = PERSONALITIES;
 window.LANGUAGES = LANGUAGES;
