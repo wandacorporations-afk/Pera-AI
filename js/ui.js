@@ -93,7 +93,16 @@ function createUserBubble(message) {
     bubbleDiv.className = 'bubble user-bubble';
     bubbleDiv.innerHTML = marked.parse(processedContent);
     
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'message-actions';
+    actionsDiv.innerHTML = `
+        <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
+            <span class="material-symbols-outlined" translate="no">content_copy</span>
+        </button> 
+    `;
+    
     messageDiv.appendChild(bubbleDiv);
+    messageDiv.appendChild(actionsDiv);
     return messageDiv;
 }
 
@@ -116,7 +125,6 @@ function createBotBubble(message, isStreaming = false) {
         <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
             <span class="material-symbols-outlined" translate="no">content_copy</span>
         </button> 
-        <span class="model-used">${currentModel}</span>
     `;
     
     messageDiv.appendChild(bubbleDiv);
@@ -188,7 +196,6 @@ function finalizeStreamingMessage() {
                 <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
                     <span class="material-symbols-outlined" translate="no">content_copy</span>
                 </button>
-                <span class="model-used">Modelo IA: ${currentModel}</span>
             `;
             actionsDiv.style.opacity = '1'; // Mostrar acciones
         }

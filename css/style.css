@@ -314,7 +314,7 @@ a{
 .settings-modal {
     width: 100%;
     height: 100%;
-    background-color: #111113;
+    background-color: #000000;
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -374,9 +374,31 @@ a{
     gap: 0.90rem;
 }
 
+/*Peefil bot area*/
+.profile-settings{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.image-settings{
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.image-settings img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Secciones */
 .settings-section {
-    background-color: #242628;
+    background-color: #444;
+    border: 1px solid #444;
     border-radius: 1rem;
     padding: 1.1rem 1.1rem;
 }
@@ -408,8 +430,8 @@ a{
     width: 100%;
     padding: 1.1rem 1rem;
     background: none;
-    border: 1px solid #333;
-    border-radius: 20px;
+    border: 1px solid #555;
+    border-radius: 50px;
     color: #ffffff;
     font-size: 0.95rem;
     transition: all 0.2s ease;
@@ -453,7 +475,7 @@ a{
 }
 
 .settings-btn-secondary {
-    background-color: #2a2c2e;
+    background: transparent;
     color: #de3e3e;
     border: 1px solid #de3e3e;
 }
@@ -472,7 +494,7 @@ a{
 .settings-select-hint {
     font-size: 0.8rem;
     line-height: 1.6;
-    color: #9ca3af;
+    color: #ccc;
     margin: 0.25rem 0 0 0;
 }
 
@@ -508,7 +530,7 @@ a{
     padding: 0.75rem;
     background: none;
     border-radius: 0.75rem;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #555;
     cursor: none;
     transition: all 0.2s ease;
 }
@@ -570,7 +592,7 @@ a{
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background-color: #2a2c2e;
+    background-color: transparent;
     border-radius: 0.75rem;
     border: none;
     cursor: none;
@@ -601,7 +623,7 @@ a{
 }
 
 .settings-checkbox-label input[type="checkbox"]:checked + .settings-checkbox-custom::after {
-    content: '🍐';
+    content: '✔️';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -848,7 +870,7 @@ a{
 .message-user {
   display: flex;
   flex-direction: column;
-  padding: 7px 0;
+  padding: 5px 0;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -861,7 +883,7 @@ a{
   max-width: 100%;
   border-radius: 25px;
   padding: 10px 15px;
-  line-height: 1.7;
+  line-height: 1.8;
   font-size: 17px;
   position: relative;
   transition: var(--transition-default);
@@ -869,7 +891,7 @@ a{
 
 /* Burbuja del Bot */
 .bot-bubble {
-  color: var(--text-primary);
+  color: var(--text-secondary);
   align-self: flex-start;
 }
 
@@ -985,7 +1007,7 @@ a{
 /* ===== PÁRRAFOS Y LÍNEAS ===== */
 .bot-bubble p {
     margin: 0.75rem 0;
-    color: #fff;
+    color: #ffffff;
     font-size: 17px;
 }
 
@@ -1219,11 +1241,10 @@ a{
 
 /* Burbuja del Usuario */
 .user-bubble {
-  background-color: #333333;
+  background-color: #444;
   color: var(--text-primary);
   align-self: flex-end;
   max-width: 75% !important;
-  border-top-right-radius: 30px;
   border-bottom-right-radius: 8px;
 }
 
@@ -1239,13 +1260,6 @@ a{
   transition: var(--transition-default);
 }
 
-.model-used{
-  color: var(--text-secondary);
-  border: 1px solid #444;
-  padding: 8px 10px;
-  border-radius: 6px;
-}
-
 .message-ia:hover .message-actions {
   opacity: 1;
   transform: translateY(0);
@@ -1255,7 +1269,6 @@ a{
 .action-btn {
   width: 35px;
   height: 35px;
-  border: 1px solid #444;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -1265,10 +1278,6 @@ a{
 
 .action-btn, .material-symbols-outlined{
   font-size: 18px;
-}
-
-.action-btn:hover {
-  background: var(--surface-tertiary);
 }
 
 /* Área de Mensaje (Input) */
@@ -1292,7 +1301,6 @@ a{
   }
 
   .message-area:not(.sticky) .input-container {
-    background-color: var(--surface-secondary);
     border-radius: 1.5rem;
     padding: 1rem;
     backdrop-filter: blur(10px);
@@ -1304,7 +1312,7 @@ a{
 .message-area.sticky {
   position: sticky;
   bottom: 0;
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
   z-index: 100;
 }
 
@@ -1329,10 +1337,6 @@ a{
   overflow: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.textarea-wrapper:focus-within {
-  border-color: var(--accent-color);
 }
 
 /* Textarea principal */
@@ -1385,7 +1389,7 @@ a{
   background-color: #333;
   color: #fff;
   gap: 3px;
-  border: none;
+  border: 1px solid #444;
   font-weight: 600;
   font-size: 15px;
   cursor: none;
