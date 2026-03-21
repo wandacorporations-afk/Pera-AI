@@ -28,6 +28,14 @@ function setupEventListeners() {
     newChatBtns.forEach(btn => btn.addEventListener('click', handleNewChat));
     settingsBtns.forEach(btn => btn.addEventListener('click', openSettingsModal)); // ✅ Abrir modal
     if (communityBtn) communityBtn.addEventListener('click', handleCommunity);
+    
+    messagesDynamic.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.edit-message-user');
+        if (editBtn) {
+            e.preventDefault();
+            editUserMessage(editBtn);
+        }
+    });
 }
 
 // ===== FUNCIONES DEL MODAL DE CONFIGURACIÓN =====
@@ -350,7 +358,12 @@ function loadSettingsToUI() {
 async function handleSendMessage() {
     const message = chatTextarea.value.trim();
     if (!message || isTyping) return;
-
+    
+    if (window.editingMessage) {
+      await handleEditMessage(message);
+      return;
+    }
+    
     // Ocultar welcome chat al enviar mensaje
     if (typeof window.hideWelcomeChat === 'function') {
         window.hideWelcomeChat();
@@ -427,6 +440,86 @@ function handleNewChat() {
     
     if (!chatTextarea.matches(':focus')) {
         messageArea.classList.remove('sticky');
+    }
+}
+
+// Función de edición
+function editUserMessage(button) {
+    // 1. Obtener la burbuja del usuario
+    const userMessageDiv = button.closest('.message-user');
+    const originalMessage = userMessageDiv.querySelector('.bubble').innerText;
+    
+    // 2. Cargar al textarea
+    const textarea = document.getElementById('chatTextarea');
+    textarea.value = originalMessage;
+    textarea.focus();
+    adjustTextareaHeight();
+    
+    // 3. Guardar referencia del mensaje a editar
+    window.editingMessage = {
+        element: userMessageDiv,
+        originalText: originalMessage
+    };
+}
+
+// Manejar el reemplazo
+async function handleEditMessage(newMessage) {
+    const editing = window.editingMessage;
+    if (!editing) return;
+    
+    // 1. Actualizar contenido de la burbuja editada
+    const bubble = editing.element.querySelector('.bubble');
+    bubble.innerHTML = marked.parse(newMessage);
+    
+    // 2. Eliminar TODOS los mensajes después de este
+    const allMessages = Array.from(messagesDynamic.children);
+    const currentIndex = allMessages.indexOf(editing.element);
+    
+    // Borrar desde el siguiente hasta el final
+    for (let i = currentIndex + 1; i < allMessages.length; i++) {
+        allMessages[i].remove();
+    }
+    
+    // 3. Limpiar contexto y reconstruir desde cero con mensajes restantes
+    clearContext();
+    
+    // Reconstruir contexto con mensajes que quedan
+    const remainingUserMessages = Array.from(messagesDynamic.children)
+        .filter(msg => msg.classList.contains('message-user'))
+        .map(msg => msg.querySelector('.bubble').innerText);
+    
+    remainingUserMessages.forEach(msg => {
+        addToContext({ role: 'user', content: msg });
+        // Simular respuesta del bot para mantener contexto (opcional)
+    });
+    
+    // 4. Enviar el nuevo mensaje editado como si fuera nuevo
+    resetTextarea();
+    
+    // Limpiar estado de edición
+    window.editingMessage = null;
+    
+    // 5. Ahora enviar el nuevo mensaje (esto generará nueva respuesta)
+    const messagesWithContext = formatMessages(newMessage);
+    currentStreamingMessage = '';
+    
+    showTypingIndicator();
+    
+    try {
+        await callPollinationsAPI(messagesWithContext, (chunk) => {
+            updateStreamingMessage(chunk);
+        });
+        
+        hideTypingIndicator();
+        finalizeStreamingMessage();
+        addToContext({ role: 'assistant', content: currentStreamingMessage });
+        scrollToBottom();
+        
+    } catch (error) {
+        hideTypingIndicator();
+        const errorBubble = createBotBubble(`❌ Error: ${error.message}`);
+        messagesDynamic.appendChild(errorBubble);
+        scrollToBottom();
     }
 }
 

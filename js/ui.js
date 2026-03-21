@@ -86,19 +86,20 @@ function createUserBubble(message) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message-user';
     
-    // ✅ CORREGIDO: Respetar saltos de línea
-    const processedContent = message.replace(/\n/g, '  \n\n');
-    
     const bubbleDiv = document.createElement('div');
     bubbleDiv.className = 'bubble user-bubble';
-    bubbleDiv.innerHTML = marked.parse(processedContent);
+    
+     bubbleDiv.innerHTML = marked.parse(message.replace(/\n/g, '<br>'));
     
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'message-actions';
     actionsDiv.innerHTML = `
-        <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
+        <button class="icon-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
             <span class="material-symbols-outlined" translate="no">content_copy</span>
         </button> 
+        <button class="icon-btn edit-message-user" aria-label="Editar mensaje">
+            <span class="material-symbols-outlined" translate="no">edit</span>
+        </button>
     `;
     
     messageDiv.appendChild(bubbleDiv);
