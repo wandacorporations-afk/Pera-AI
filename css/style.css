@@ -1289,7 +1289,7 @@ a{
 .action-btn {
   width: 35px;
   height: 35px;
-  color: var(--text-secondary);
+  color: #ccc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1297,7 +1297,7 @@ a{
 }
 
 .action-btn, .material-symbols-outlined{
-  font-size: 18px;
+  font-size: 17px;
 }
 
 /* Área de Mensaje (Input) */
