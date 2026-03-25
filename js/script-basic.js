@@ -48,7 +48,7 @@ function initSettingsModal() {
     closeBtn = document.getElementById('settingsModalClose');
     
     if (!settingsOverlay || !settingsModal) {
-        console.warn('⚠️ Modal de configuración no encontrado en el DOM');
+        
         return;
     }
     
@@ -91,12 +91,6 @@ function initSettingsControls() {
     const userNameInput = document.getElementById('userNameInput');
     const clearNameBtn = document.getElementById('clearUserNameBtn');
     const saveNameBtn = document.getElementById('saveUserNameBtn');
-    
-    if (userNameInput) {
-        userNameInput.addEventListener('input', (e) => {
-            // Solo actualizamos cuando se guarda
-        });
-    }
     
     if (clearNameBtn) {
         clearNameBtn.addEventListener('click', () => {
@@ -264,11 +258,11 @@ async function populateModelsDropdown() {
     // 1. Intentar usar caché si existe y no expiró
     if (cachedModels && lastFetch && (Date.now() - lastFetch < EIGHT_HOURS)) {
         models = JSON.parse(cachedModels);
-        console.log('📦 Usando modelos en caché');
+        
     } else {
         // 2. Hacer fetch a la API
         try {
-            console.log('🌐 Obteniendo modelos de Pollinations.ai...');
+            
             const response = await fetch('https://gen.pollinations.ai/v1/models');
             const data = await response.json();
             
@@ -277,22 +271,20 @@ async function populateModelsDropdown() {
                 // Guardar en caché
                 localStorage.setItem('pera_models_cache', JSON.stringify(models));
                 localStorage.setItem('pera_models_last_fetch', Date.now());
-                console.log('✅ Modelos actualizados desde API');
+                
             }
         } catch (error) {
-            console.error('❌ Error fetching models:', error);
+            
         }
     }
     
     // 3. Si no hay modelos (ni caché ni API), usar defaults
     if (!models || !models.data || models.data.length === 0) {
-        console.log('⚠️ Usando modelos por defecto');
+        
         return; // El select ya tiene opciones HTML hardcodeadas
     }
     
-    // 4. Poblar el select con los modelos
-    const currentValue = select.value; // Guardar selección actual
-    
+
     // Limpiar opciones actuales (excepto la primera si quieres mantenerla)
     select.innerHTML = '';
     
@@ -398,7 +390,7 @@ async function handleSendMessage() {
         scrollToBottom();
         
     } catch (error) {
-        console.error('Error:', error);
+        
         hideTypingIndicator();
         
         const errorBubble = createBotBubble(`❌ Error: ${error.message}`);
@@ -469,7 +461,7 @@ async function handleEditMessage(newMessage) {
     
     // 1. Actualizar contenido de la burbuja editada
     const bubble = editing.element.querySelector('.bubble');
-    bubble.innerHTML = marked.parse(newMessage);
+    bubble.innerHTML = marked.parse(newMessage.replace(/\n/g, '<br>'));
     
     // 2. Eliminar TODOS los mensajes después de este
     const allMessages = Array.from(messagesDynamic.children);
@@ -521,11 +513,6 @@ async function handleEditMessage(newMessage) {
         messagesDynamic.appendChild(errorBubble);
         scrollToBottom();
     }
-}
-
-function handleSettings() {
-    // Esta función ahora abre el modal
-    openSettingsModal();
 }
 
 function handleCommunity() {

@@ -75,7 +75,7 @@ async function callPollinationsAPI(messages, onChunk, options = {}) {
     if (savedTemp) temperature = parseFloat(savedTemp);
     
     try {
-        console.log('📡 Enviando petición con modelo:', currentModel, 'temperatura:', temperature);
+        
         
         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.chat}`, {
             method: 'POST',
@@ -105,7 +105,7 @@ async function callPollinationsAPI(messages, onChunk, options = {}) {
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
-                console.log('✅ Streaming completado');
+                
                 break;
             }
             
@@ -127,7 +127,7 @@ async function callPollinationsAPI(messages, onChunk, options = {}) {
                         }
                         
                     } catch (e) {
-                        console.warn('Error parsing chunk:', e);
+                        
                     }
                 }
             }
@@ -141,7 +141,7 @@ async function callPollinationsAPI(messages, onChunk, options = {}) {
         if (error.name === 'AbortError') {
             throw new Error('⏱️ Tiempo de espera agotado');
         }
-        console.error('🔥 Error:', error);
+        
         throw error;
     }
 }
@@ -151,4 +151,3 @@ window.API_CONFIG = API_CONFIG;
 window.setActiveModel = setActiveModel;
 window.callPollinationsAPI = callPollinationsAPI;
 
-console.log('🚀 API Config cargada correctamente');

@@ -131,7 +131,7 @@ function setPersonality(personalityKey) {
         currentPersonality = personalityKey;
         localStorage.setItem('pera_personality', personalityKey);
         actualizarSystemPrompt();
-        console.log('🎭 Personalidad actualizada:', personalityKey);
+        
     }
 }
 
@@ -141,7 +141,7 @@ function setLanguage(languageCode) {
         currentLanguage = languageCode;
         localStorage.setItem('pera_language', languageCode);
         actualizarSystemPrompt();
-        console.log('🌐 Idioma actualizado:', languageCode);
+        
     }
 }
 
@@ -155,7 +155,7 @@ function setUserName(name) {
     }
     
     actualizarSystemPrompt();
-    console.log('👤 Nombre actualizado:', userName || 'ninguno');
+    
 }
 
 // ✅ MEJORADO: Función para marcar saludo como hecho
@@ -175,7 +175,7 @@ function addToContext(message) {
         conversationContext = [...systemMessages, ...otherMessages];
     }
     
-    console.log('📝 Contexto actual:', conversationContext.length, 'mensajes');
+    
 }
 
 // Función para limpiar el contexto
@@ -184,7 +184,7 @@ function clearContext() {
     conversationContext = [];
     actualizarSystemPrompt();
     conversationContext = [SYSTEM_PROMPT];
-    console.log('🔄 Contexto limpiado y saludo reseteado');
+    
 }
 
 // Función para formatear mensajes

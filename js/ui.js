@@ -50,7 +50,7 @@ renderer.code = function(code, language) {
     `;
 };
 
-// Configuración de marked (actualizada con el renderer)
+// Configuración unificada
 marked.setOptions({
     renderer: renderer,
     breaks: true,
@@ -74,7 +74,6 @@ const sendBtn = document.getElementById('sendBtn');
 let isTyping = false;
 let typingAnimationInterval;
 let currentStreamingMessage = '';
-let streamingMessageId = null;
 
 // ✅ NUEVA: Cargar configuración de Enter desde localStorage
 let enterToSend = localStorage.getItem('pera_enter_to_send') !== 'true'; // true por defecto
@@ -95,10 +94,14 @@ function createUserBubble(message) {
     actionsDiv.className = 'message-actions';
     actionsDiv.innerHTML = `
         <button class="icon-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
-            <span class="material-symbols-outlined" translate="no">content_copy</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+            </svg>
         </button> 
         <button class="icon-btn edit-message-user" aria-label="Editar mensaje">
-            <span class="material-symbols-outlined" translate="no">edit</span>
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+             <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+            </svg>
         </button>
     `;
     
@@ -124,7 +127,9 @@ function createBotBubble(message, isStreaming = false) {
     actionsDiv.className = 'message-actions';
     actionsDiv.innerHTML = `
         <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
-            <span class="material-symbols-outlined" translate="no">content_copy</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+            </svg>
         </button> 
     `;
     
@@ -195,7 +200,9 @@ function finalizeStreamingMessage() {
         if (actionsDiv) {
             actionsDiv.innerHTML = `
                 <button class="icon-btn action-btn copy-btn" aria-label="Copiar mensaje" onclick="copyMessage(this)">
-                    <span class="material-symbols-outlined" translate="no">content_copy</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                    </svg>
                 </button>
             `;
             actionsDiv.style.opacity = '1'; // Mostrar acciones
@@ -213,16 +220,6 @@ function finalizeStreamingMessage() {
     setTimeout(() => {
         currentStreamingMessage = '';
     }, 100);
-}
-
-// ✅ FUNCIÓN NUEVA - Para limpiar si hay error
-function abortStreaming() {
-    const streamingMsg = document.getElementById('streaming-message');
-    if (streamingMsg) {
-        streamingMsg.remove(); // Eliminar burbuja incompleta
-    }
-    currentStreamingMessage = '';
-    streamingMessageId = null;
 }
 
 // Función para mostrar indicador de typing
@@ -253,7 +250,7 @@ function showTypingIndicator() {
         const textElement = document.querySelector('.typing-text');
         if (textElement) {
             const dots = '.'.repeat((step % 3) + 1);
-            textElement.textContent = `typing${dots}`;
+            textElement.textContent = `typing ${dots}`;
             step++;
         }
     }, 500);
@@ -311,7 +308,7 @@ window.copyCodeBlock = function(button) {
             button.style.borderColor = originalBorder;
         }, 2000);
     }).catch(err => {
-        console.error('Error al copiar:', err);
+        
         alert('No se pudo copiar el código automáticamente. Selecciona y copia manualmente.');
     });
 };
@@ -392,14 +389,14 @@ const welcomeContainer = document.querySelector('.welcome-chat');
 function hideWelcomeChat() {
     if (welcomeContainer && welcomeContainer.style.display !== 'none') {
         welcomeContainer.style.display = 'none';
-        console.log('👋 Welcome chat ocultado');
+        
     }
 }
 
 function showWelcomeChat() {
     if (welcomeContainer && welcomeContainer.style.display !== 'flex') {
         welcomeContainer.style.display = 'flex'; // Porque en CSS tiene display: flex
-        console.log('👋 Welcome chat mostrado');
+        
     }
 }
 

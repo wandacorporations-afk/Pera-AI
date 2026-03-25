@@ -5,7 +5,7 @@
 }
 
 html, body{
-  background: #050505;
+  background: #151517;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   -webkit-font-smoothing: antialiased;
@@ -27,10 +27,10 @@ a{
 
 /* Variables y configuración base*/
 :root {
-  --bg-primary: #050505;
+  --bg-primary: #151517;
   --surface-secondary: #1e1f21;
   --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
+  --text-secondary: #f8f9fa;
   --accent-color: #3b82f6;
   --accent-hover: #2563eb;
   --icon-size: 40px;
@@ -57,6 +57,7 @@ a{
   z-index: 1000;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid #333;
 }
 
 .header-container {
@@ -282,8 +283,7 @@ a{
 #newChatBtnMobile,
 #shareBtnDesktop,
 #shareBtnMobile,
-#communityBtn,
-#modelName {
+#communityBtn {
   transition: var(--transition-default);
 }
 
@@ -313,14 +313,16 @@ a{
 /* Modal base */
 .settings-modal {
     width: 100%;
-    height: 100%;
-    background-color: #000000;
+    height: 95%;
+    background-color: #2C2C2E;
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 .settings-modal-overlay.active .settings-modal {
@@ -348,9 +350,10 @@ a{
     border-radius: 50%;
     background-color: transparent;
     border: none;
-    color: #9ca3af;
+    color: #fff;
     cursor: none;
     display: flex;
+    font-size: 22px;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
@@ -358,8 +361,8 @@ a{
 
 .settings-modal-close:hover {
     background-color: rgba(239, 68, 68, 0.15);
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: #F25A5A;
+    color: #F25A5A;
     transform: scale(1.05);
 }
 
@@ -377,7 +380,7 @@ a{
 
 /* Secciones */
 .settings-section {
-    background-color: #444;
+    background-color: #2C2C2E;
     border: 1px solid #444;
     border-radius: 1rem;
     padding: 1.1rem 1.1rem;
@@ -410,7 +413,7 @@ a{
     width: 100%;
     padding: 1.1rem 1rem;
     background: none;
-    border: 1px solid #555;
+    border: 1px solid #444;
     border-radius: 50px;
     color: #ffffff;
     font-size: 0.95rem;
@@ -424,7 +427,7 @@ a{
 }
 
 .settings-input::placeholder {
-    color: #6b7280;
+    color: #ccc;
 }
 
 /* Grupo de botones */
@@ -437,7 +440,7 @@ a{
 .settings-btn {
     flex: 1;
     padding: 0.6rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 500;
     cursor: none;
@@ -456,8 +459,8 @@ a{
 
 .settings-btn-secondary {
     background: transparent;
-    color: #de3e3e;
-    border: 1px solid #de3e3e;
+    color: #F25A5A;
+    border: 1px solid #F25A5A;
 }
 
 .settings-btn-secondary:hover {
@@ -509,7 +512,6 @@ a{
     gap: 0.75rem;
     padding: 0.75rem;
     background: none;
-    border-radius: 0.75rem;
     border-bottom: 1px solid #555;
     cursor: none;
     transition: all 0.2s ease;
@@ -562,7 +564,7 @@ a{
 }
 
 .settings-radio-text small {
-    color: #9ca3af;
+    color: #ccc;
     font-size: 0.8rem;
 }
 
@@ -598,17 +600,18 @@ a{
 }
 
 .settings-checkbox-label input[type="checkbox"]:checked + .settings-checkbox-custom {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
+    background-color: #ffffff;
+    border-color: #ffffff;
 }
 
 .settings-checkbox-label input[type="checkbox"]:checked + .settings-checkbox-custom::after {
-    content: '✔️';
+    content: "check";
+    font-family: 'Material Symbols Outlined';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #ffffff;
+    color: #3a3c3e;
     font-size: 0.8rem;
 }
 
@@ -621,7 +624,7 @@ a{
 }
 
 .settings-checkbox-text small {
-    color: #9ca3af;
+    color: #ccc;
     font-size: 0.8rem;
 }
 
@@ -637,16 +640,16 @@ a{
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    color: #9ca3af;
+    color: #ccc;
     font-size: 0.85rem;
 }
 
 .slider-label-precise {
-    color: #6b7280;
+    color: #ccc;
 }
 
 .slider-label-creative {
-    color: #6b7280;
+    color: #ccc;
 }
 
 .slider-value {
@@ -663,7 +666,7 @@ a{
     position: relative;
     width: 100%;
     height: 6px;
-    background: #2a2c2e; /* Gris claro de fondo */
+    background: #444; /* Gris claro de fondo */
     border-radius: 10px;
     cursor: none;
     margin: 1rem 0;
@@ -861,8 +864,8 @@ a{
 .bubble {
   max-width: 100%;
   border-radius: 25px;
-  padding: 10px 15px;
-  line-height: 1.5;
+  padding: 0.50rem 1.4rem;
+  line-height: 1.7;
   font-size: 17px;
   position: relative;
   transition: var(--transition-default);
@@ -887,7 +890,7 @@ a{
 .bot-bubble em, 
 .bot-bubble i {
     font-style: italic;
-    color: #e5e7eb;
+    color: #ffffff;
 }
 
 .bot-bubble strong, 
@@ -933,7 +936,7 @@ a{
 .bot-bubble s,
 .bot-bubble del {
     text-decoration: line-through;
-    color: #9ca3af; /* Gris más claro para tachado */
+    color: #ccc; /* Gris más claro para tachado */
 }
 
 .bot-bubble mark {
@@ -946,21 +949,21 @@ a{
 
 .bot-bubble small {
     font-size: 0.8rem;
-    color: #9ca3af;
+    color: #ccc;
 }
 
 .bot-bubble sub {
     font-size: 0.7rem;
     vertical-align: sub;
     line-height: 0;
-    color: #9ca3af;
+    color: #ccc;
 }
 
 .bot-bubble sup {
     font-size: 0.7rem;
     vertical-align: super;
     line-height: 0;
-    color: #9ca3af;
+    color: #ccc;
 }
 
 /* ===== ENCABEZADOS ===== */
@@ -1004,7 +1007,7 @@ a{
     font-weight: 600;
     margin: 0.5rem 0 0.25rem 0;
     padding: 0.2rem 0;
-    color: #e5e7eb;
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1014,7 +1017,7 @@ a{
     font-weight: 600;
     margin: 0.5rem 0 0.25rem 0;
     padding: 0.2rem 0;
-    color: #e5e7eb;
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1052,7 +1055,7 @@ a{
 .bot-bubble ol {
     margin: 0.75rem 0 0.75rem 1.5rem;
     padding: 0;
-    color: #e5e7eb;
+    color: #ffffff;
     font-size: 17px;
 }
 
@@ -1162,7 +1165,7 @@ a{
 .bot-bubble td {
     padding: 0.6rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e5e7eb;
+    color: #ffffff;
 }
 
 .bot-bubble tr:last-child td {
@@ -1216,7 +1219,7 @@ a{
     border-radius: 0.5rem;
     overflow-x: auto;
     border: none;
-    color: #e5e7eb;
+    color: #ffffff;
     font-family: 'Fira Code', monospace;
     font-size: 0.85rem;
 }
@@ -1256,7 +1259,7 @@ a{
 
 /* Burbuja del Usuario */
 .user-bubble {
-  background-color: #444;
+  background-color: #2C2C2E;
   color: var(--text-primary);
   align-self: flex-end;
   max-width: 75% !important;
@@ -1287,8 +1290,8 @@ a{
 
 /* Botones de acción específicos */
 .action-btn {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   color: #ccc;
   display: flex;
   align-items: center;
@@ -1341,7 +1344,7 @@ a{
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: #121214;
+  background: #2C2C2E;
   border: 1px solid #2a2a2c;
   padding: 10px 10px;
   border-radius: 30px;
@@ -1406,10 +1409,10 @@ a{
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #222;
+  background: transparent;
   color: #fff;
   gap: 3px;
-  border: 1px solid #333;
+  border: 1px solid #444;
   font-weight: 600;
   font-size: 15px;
   cursor: none;
@@ -1450,6 +1453,7 @@ a{
 
   .bubble {
     max-width: 100%;
+    padding: 0.50rem 1.4rem;
   }
   
   .user-bubble{
@@ -1474,7 +1478,7 @@ a{
 
   .bubble {
     max-width: 100%;
-    padding: 10px 15px;
+    padding: 0.50rem 1.4rem;
     font-size: 17px;
   }
   
@@ -1493,8 +1497,8 @@ a{
   }
 
   .send-btn {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .toolbar-btn .material-symbols-outlined,
