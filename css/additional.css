@@ -54,6 +54,7 @@
         color: var(--text-secondary);
         font-size: 0.9rem;
         min-width: 140px;
+        display: none;
         animation: textPulse 2s infinite;
     }
     

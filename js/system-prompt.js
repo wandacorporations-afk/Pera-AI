@@ -75,131 +75,165 @@ const PERSONALITIES = {
     }
 };
 
-// ✅ MAPA DE IDIOMAS
-const LANGUAGES = {
-    es: 'Español - Responde siempre en español, usando el español neutro.',
-    en: 'English - Always respond in English, using clear and natural language.',
-    fr: 'Français - Répondez toujours en français, en utilisant un langage clair et naturel.',
-    de: 'Deutsch - Antworten Sie immer auf Deutsch, in klarer und natürlicher Sprache.',
-    it: 'Italiano - Rispondi sempre in italiano, usando un linguaggio chiaro e naturale.',
-    pt: 'Português - Responda sempre em português, usando linguagem clara e natural.',
-    ja: '日本語 - 常に日本語で返答し、明確で自然な言葉遣いを心がけてください。',
-    zh: '中文 - 请始终用中文回答，使用清晰自然的语言。',
-    ru: 'Русский - Всегда отвечайте на русском языке, используя ясный и естественный язык.'
-};
+// ✅ IDIOMAS - Se llenarán después de cargar el JSON
+let LANGUAGES = {};
+let languagesData = [];
+let languagesLoaded = false;
+
+// Función para cargar JSON
+function loadLanguagesData() {
+    fetch('languages.json')
+        .then(response => response.json())
+        .then(data => {
+            languagesData = data;
+            // Construir LANGUAGES para el system prompt
+            data.forEach(lang => {
+                LANGUAGES[lang.code] = `${lang.name} - Responde siempre en ${lang.name}, usando lenguaje claro y natural.`;
+            });
+            languagesLoaded = true;
+            console.log(`✅ ${languagesData.length} idiomas cargados`);
+            
+            // Actualizar system prompt después de cargar idiomas
+            actualizarSystemPrompt();
+            
+            // Disparar evento para que la UI se actualice
+            if (typeof window.dispatchEvent === 'function') {
+                window.dispatchEvent(new CustomEvent('languagesReady'));
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error cargando idiomas:', error);
+            // Fallback por si falla
+            languagesData = [
+                { code: "es", name: "Español", flag: "🇪🇸" },
+                { code: "en", name: "English", flag: "🇺🇸" },
+                { code: "pt", name: "Português", flag: "🇧🇷" }
+            ];
+            languagesData.forEach(lang => {
+                LANGUAGES[lang.code] = `${lang.name} - Responde siempre en ${lang.name}, usando lenguaje claro y natural.`;
+            });
+            languagesLoaded = true;
+            actualizarSystemPrompt();
+            window.dispatchEvent(new CustomEvent('languagesReady'));
+        });
+}
 
 // Cargar configuraciones guardadas
 let currentPersonality = localStorage.getItem('pera_personality') || 'profesional';
 let currentLanguage = localStorage.getItem('pera_language') || 'es';
 let userName = localStorage.getItem('pera_user_name') || '';
 
-// Personalidad base del bot (se actualizará dinámicamente)
+// Personalidad base del bot
 let SYSTEM_PROMPT = {
     role: 'system',
     content: ''
 };
 
-// ✅ NUEVA: Función unificada para actualizar system prompt
+// Función unificada para actualizar system prompt
 function actualizarSystemPrompt() {
     const personalityPrompt = PERSONALITIES[currentPersonality]?.prompt || PERSONALITIES.profesional.prompt;
-    const languagePrompt = LANGUAGES[currentLanguage] || LANGUAGES.es;
+    const languagePrompt = LANGUAGES[currentLanguage] || `Responde siempre en el idioma apropiado.`;
     
     let prompt = `${personalityPrompt}\n\n${languagePrompt}`;
     
-    // Añadir nombre de usuario si existe
     if (userName) {
         if (!yaSaludamosAlUsuario) {
             prompt += `\n\nEl usuario se llama ${userName}. Salúdalo por su nombre de forma natural en esta primera respuesta.`;
         } else {
-            prompt += `\n\nEl usuario se llama ${userName}. Ya lo has saludado, así que NO repitas su nombre al inicio de cada frase. 
-            Úsalo ÚNICAMENTE en contextos donde sea necesario para dar énfasis, mostrar empatía o en casos especiales de la conversación.`;
+            prompt += `\n\nEl usuario se llama ${userName}. Ya lo has saludado, así que NO repitas su nombre al inicio de cada frase. Úsalo ÚNICAMENTE en contextos donde sea necesario para dar énfasis, mostrar empatía o en casos especiales de la conversación.`;
         }
     }
     
     SYSTEM_PROMPT.content = prompt;
     
-    // Actualizar en contexto si existe
     const systemIndex = conversationContext.findIndex(m => m.role === 'system');
     if (systemIndex !== -1) {
         conversationContext[systemIndex] = SYSTEM_PROMPT;
     }
 }
 
-// ✅ MEJORADO: Actualizar personalidad
+// Actualizar personalidad
 function setPersonality(personalityKey) {
     if (PERSONALITIES[personalityKey]) {
         currentPersonality = personalityKey;
         localStorage.setItem('pera_personality', personalityKey);
         actualizarSystemPrompt();
-        
     }
 }
 
-// ✅ MEJORADO: Actualizar idioma
+// Actualizar idioma
 function setLanguage(languageCode) {
     if (LANGUAGES[languageCode]) {
         currentLanguage = languageCode;
         localStorage.setItem('pera_language', languageCode);
         actualizarSystemPrompt();
-        
     }
 }
 
-// ✅ MEJORADO: Actualizar nombre de usuario
+// Actualizar nombre de usuario
 function setUserName(name) {
     userName = name || '';
     if (name) {
         localStorage.setItem('pera_user_name', name);
     } else {
         localStorage.removeItem('pera_user_name');
+        userName = 'Zenicero';
+        localStorage.setItem('pera_user_name', userName);
     }
-    
     actualizarSystemPrompt();
-    
+    if (typeof updateProfileInitial === 'function') {
+        updateProfileInitial();
+    }
 }
 
-// ✅ MEJORADO: Función para marcar saludo como hecho
+// Marcar saludo como hecho
 function marcarSaludoComoHecho() {
     yaSaludamosAlUsuario = true;
     actualizarSystemPrompt();
 }
 
-// Función para agregar mensaje al contexto
+// Agregar mensaje al contexto
 function addToContext(message) {
     conversationContext.push(message);
-    
-    // Limitar el tamaño del contexto
     if (conversationContext.length > MAX_CONTEXT_MESSAGES) {
         const systemMessages = conversationContext.filter(m => m.role === 'system');
         const otherMessages = conversationContext.filter(m => m.role !== 'system').slice(-MAX_CONTEXT_MESSAGES + systemMessages.length);
         conversationContext = [...systemMessages, ...otherMessages];
     }
-    
-    
 }
 
-// Función para limpiar el contexto
+// Limpiar contexto
 function clearContext() {
-    yaSaludamosAlUsuario = false; // Resetear para nuevo chat
+    yaSaludamosAlUsuario = false;
     conversationContext = [];
     actualizarSystemPrompt();
     conversationContext = [SYSTEM_PROMPT];
-    
 }
 
-// Función para formatear mensajes
+// Formatear mensajes
 function formatMessages(userMessage) {
     if (!conversationContext.some(m => m.role === 'system')) {
         conversationContext.unshift(SYSTEM_PROMPT);
     }
-    
     const userMsg = { role: 'user', content: userMessage };
     addToContext(userMsg);
-    
     return conversationContext;
 }
 
-// Inicializar
+// Obtener lista de idiomas para UI
+function getLanguagesList() {
+    return languagesData;
+}
+
+// Verificar si los idiomas están cargados
+function isLanguagesLoaded() {
+    return languagesLoaded;
+}
+
+// Iniciar carga de idiomas
+loadLanguagesData();
+
+// Inicialización básica (sin esperar idiomas)
 actualizarSystemPrompt();
 clearContext();
 
@@ -211,5 +245,7 @@ window.setPersonality = setPersonality;
 window.setLanguage = setLanguage;
 window.setUserName = setUserName;
 window.marcarSaludoComoHecho = marcarSaludoComoHecho;
+window.getLanguagesList = getLanguagesList;
+window.isLanguagesLoaded = isLanguagesLoaded;
 window.PERSONALITIES = PERSONALITIES;
 window.LANGUAGES = LANGUAGES;
